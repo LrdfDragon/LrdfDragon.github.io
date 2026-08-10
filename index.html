@@ -4,261 +4,237 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TOOLBOX - LeRDragon</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* --- REINITIALISATION ET STYLES DE BASE --- */
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --accent-cyan: #00f2fe;
+            --accent-yellow: #facc15;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: #1f2937;
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #0b0e14;
-            color: #ffffff;
-            overflow-x: hidden;
-            /* Grille subtile style Geometry Dash sans Canvas/Particules */
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             background-image: 
-                linear-gradient(rgba(0, 229, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 229, 255, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
+                radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.15) 0%, transparent 50%),
+                linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
         }
 
-        /* --- CONTENEUR PRINCIPAL --- */
         .container {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 40px 20px;
+            width: 100%;
         }
 
-        /* --- EN-TÊTE --- */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
-            border-bottom: 2px solid rgba(0, 229, 255, 0.2);
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 50px;
         }
 
         .logo {
-            font-size: 1.8rem;
             font-weight: 800;
-            color: #00e5ff;
-            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+            font-size: 1.2rem;
             letter-spacing: 2px;
+            color: var(--accent-cyan);
         }
 
         .logo span {
-            color: #ffcc00;
+            color: var(--accent-yellow);
         }
 
-        /* --- SECTION HERO (ACCUEIL) --- */
+        .btn-support {
+            background: rgba(250, 204, 21, 0.1);
+            color: var(--accent-yellow);
+            border: 1px solid rgba(250, 204, 21, 0.3);
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-support:hover {
+            background: var(--accent-yellow);
+            color: #000;
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
+        }
+
         .hero {
             text-align: center;
-            padding: 70px 20px 40px 20px;
+            margin-bottom: 60px;
         }
 
-        .hero h1 {
-            font-size: 3rem;
+        .badge {
+            display: inline-block;
+            background: rgba(0, 242, 254, 0.1);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
             margin-bottom: 20px;
-            color: #ffffff;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .hero p {
-            font-size: 1.2rem;
-            color: #a0aec0;
-            max-width: 700px;
-            margin: 0 auto 40px auto;
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0 auto 35px auto;
             line-height: 1.6;
         }
 
-        /* --- BOÎTE DE COMMANDE --- */
         .command-box {
-            background: rgba(15, 23, 42, 0.9);
-            border: 2px solid #00e5ff;
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.25);
+            background: var(--card-bg);
+            border: 1px solid var(--accent-cyan);
             border-radius: 12px;
-            padding: 20px;
-            max-width: 650px;
-            margin: 0 auto;
+            padding: 16px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 15px;
-            backdrop-filter: blur(5px);
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.15);
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
         }
 
         .command-text {
-            font-family: 'Consolas', 'Courier New', monospace;
-            color: #00ffcc;
-            font-size: 1.05rem;
-            word-break: break-all;
-        }
-
-        .btn-copy {
-            background: #00e5ff;
-            color: #0b0e14;
-            border: none;
-            padding: 12px 24px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
+            font-family: 'Fira Code', monospace;
+            color: var(--accent-cyan);
+            font-size: 0.95rem;
+            overflow-x: auto;
             white-space: nowrap;
+            margin-right: 15px;
         }
 
-        .btn-copy:hover {
-            background: #ffcc00;
-            box-shadow: 0 0 15px rgba(255, 204, 0, 0.6);
+        .copy-btn {
+            background: var(--accent-cyan);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .copy-btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 242, 254, 0.3);
         }
 
-        /* --- SECTIONS D'INFORMATIONS --- */
-        .section {
-            padding: 50px 20px;
-            margin: 40px 0;
-            background: rgba(15, 23, 42, 0.7);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-        }
-
-        .section-title {
-            font-size: 2rem;
-            color: #ffcc00;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .grid-cards {
+        .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
-            margin-top: 30px;
+            margin-top: 50px;
         }
 
         .card {
-            background: rgba(30, 41, 59, 0.8);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             padding: 25px;
             border-radius: 12px;
-            border-left: 4px solid #00e5ff;
-            transition: transform 0.3s ease;
+            transition: border-color 0.3s ease;
         }
 
         .card:hover {
-            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         .card h3 {
-            color: #ffffff;
+            color: var(--accent-yellow);
             margin-bottom: 10px;
+            font-size: 1.1rem;
         }
 
         .card p {
-            color: #94a3b8;
-            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
             line-height: 1.5;
         }
 
-        /* --- GRILLE SUPPORT & DISCORD --- */
-        .support-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
+        .support-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
             margin-top: 40px;
-        }
-
-        .support-form-box {
-            background: rgba(15, 23, 42, 0.9);
-            border: 2px solid #00e5ff;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);
-        }
-
-        .support-form-box h3 {
-            color: #00e5ff;
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #cbd5e1;
-            font-size: 0.9rem;
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            background: rgba(30, 41, 59, 0.9);
-            border: 1px solid rgba(0, 229, 255, 0.3);
-            border-radius: 6px;
-            color: #ffffff;
-            font-size: 0.95rem;
-            outline: none;
-        }
-
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            border-color: #00e5ff;
-            box-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
-        }
-
-        .btn-submit {
-            width: 100%;
-            background: #00e5ff;
-            color: #0b0e14;
-            border: none;
-            padding: 12px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-submit:hover {
-            background: #ffcc00;
-            box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
-        }
-
-        .discord-box {
             text-align: center;
-            background: linear-gradient(135deg, rgba(88, 101, 242, 0.25), rgba(15, 23, 42, 0.9));
-            border: 2px solid #5865F2;
-            padding: 30px;
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
         }
 
-        .btn-discord {
-            display: inline-block;
-            background: #5865F2;
-            color: white;
-            padding: 14px 30px;
+        .support-section h2 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .support-section p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .support-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .support-link {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
             border-radius: 8px;
             text-decoration: none;
-            font-weight: bold;
-            margin-top: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
         }
 
-        .btn-discord:hover {
-            background: #4752C4;
-            box-shadow: 0 0 20px rgba(88, 101, 242, 0.6);
+        .support-link:hover {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
         }
 
-        /* --- FOOTER AVEC PSEUDO RGB ANIMÉ --- */
         footer {
             text-align: center;
             padding: 40px 0;
@@ -287,123 +263,68 @@
 <body>
 
     <div class="container">
-        <!-- HEADER -->
         <header>
             <div class="logo">DRAGONRIA <span>TOOLBOX</span></div>
+            <a href="#support" class="btn-support">💬 Support / Contact</a>
         </header>
 
-        <!-- HERO SECTION -->
-        <section class="hero">
-            <h1>L'Outil Ultime System & Network</h1>
-            <p>
-                Un terminal interactif puissant conçu pour analyser votre configuration matérielle, monitorer vos performances en temps réel et gérer vos paramètres réseau sans prise de tête. 
-                <br><br>
-                ✨ <i>Ce projet est en évolution constante : de nombreuses nouvelles fonctionnalités et mises à jour arriveront régulièrement !</i>
-            </p>
+        <main>
+            <section class="hero">
+                <div class="badge">🚀 Version 0.6 Disponible</div>
+                <h1>L'Outil Ultime System & Network</h1>
+                <p class="description">
+                    Un terminal interactif puissant conçu pour analyser votre configuration matérielle, 
+                    monitorer vos performances en temps réel et gérer vos paramètres réseau sans prise de tête.
+                </p>
+                
+                <div class="command-box">
+                    <code class="command-text" id="cmd">irm https://lrdfdragon.github.io/toolbox.ps1 | iex</code>
+                    <button class="copy-btn" onclick="copyCommand()">Copier</button>
+                </div>
+            </section>
 
-            <!-- BOÎTE DE COMMANDE WEB -->
-            <div class="command-box">
-                <span class="command-text" id="cmdText">irm https://lrdfdragon.github.io/toolbox.ps1 | iex</span>
-                <button class="btn-copy" onclick="copyCommand()">Copier</button>
-            </div>
-        </section>
-
-        <!-- SECTION CE QUE FAIT LA TOOLBOX -->
-        <section class="section">
-            <h2 class="section-title">Ce que propose la Toolbox</h2>
-            <div class="grid-cards">
+            <section class="features">
                 <div class="card">
-                    <h3>💻 Détail Config Exhaustif</h3>
-                    <p>Obtenez un rapport complet sur votre CPU, GPU, RAM, Carte Mère, BIOS et Stockage avec option d'export .txt direct sur votre bureau.</p>
+                    <h3>💻 Diagnostic System</h3>
+                    <p>Obtenez une vue détaillée de votre matériel (CPU, GPU, RAM, Disques) et exportez vos données facilement.</p>
                 </div>
                 <div class="card">
                     <h3>🌐 Réseau & RDP</h3>
-                    <p>Visualisez instantanément vos cartes réseau (Ethernet, Wi-Fi, VPN) et gérez vos accès Remote Desktop simplement.</p>
+                    <p>Analyse complète de vos cartes réseau, adresses IP et contrôle interactif des accès à distance.</p>
                 </div>
                 <div class="card">
-                    <h3>🐉 Benchmark Dragon Score</h3>
-                    <p>Testez la puissance brute de votre processeur et de votre mémoire RAM grâce à un système de calcul de score personnalisé.</p>
+                    <h3>⚡ Dragon Score Bench</h3>
+                    <p>Mesurez les performances brutes de votre processeur et de votre mémoire vive en un clic.</p>
                 </div>
-                <div class="card">
-                    <h3>📊 Moniteur Temps Réel</h3>
-                    <p>Un suivi ultra-fluide de la charge CPU, de la mémoire vive et de l'uptime système, sans impact sur votre disque dur.</p>
-                </div>
-            </div>
+            </section>
 
-            <!-- GRILLE SUPPORT WEB & DISCORD -->
-            <div class="support-grid">
-                <!-- FORMULAIRE SUPPORT DIRECT -->
-                <div class="support-form-box">
-                    <h3>🛠️ Support Direct Web</h3>
-                    <form id="supportForm" onsubmit="handleSupportSubmit(event)">
-                        <div class="form-group">
-                            <label for="username">Pseudo / Nom :</label>
-                            <input type="text" id="username" required placeholder="Ex: LeRDragon">
-                        </div>
-                        <div class="form-group">
-                            <label for="subject">Sujet du message :</label>
-                            <select id="subject" required>
-                                <option value="bug">🐛 Signalement de Bug</option>
-                                <option value="idea">💡 Suggestion / Idée</option>
-                                <option value="question">❓ Question technique</option>
-                                <option value="other">💬 Autre</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="message">Message :</label>
-                            <textarea id="message" rows="4" required placeholder="Expliquez votre demande..."></textarea>
-                        </div>
-                        <button type="submit" class="btn-submit" id="btnSubmit">Envoyer au Support</button>
-                    </form>
+            <section class="support-section" id="support">
+                <h2>Besoin d'aide ou un problème à signaler ?</h2>
+                <p>Le projet est en évolution constante. Vous pouvez nous contacter ou ouvrir un ticket pour proposer des fonctionnalités.</p>
+                <div class="support-links">
+                    <a href="https://github.com/LrdfDragon/LrdfDragon.github.io/issues" target="_blank" class="support-link">🐛 Signaler un bug (GitHub)</a>
                 </div>
+            </section>
+        </main>
 
-                <!-- CARTE DISCORD -->
-                <div class="discord-box">
-                    <h2 style="color: #ffffff; margin-bottom: 15px;">💬 Rejoins le Discord !</h2>
-                    <p style="color: #cbd5e1; margin-bottom: 15px;">
-                        Tu préfères échanger en direct avec la communauté, suivre les annonces et poser tes questions sur un serveur dédié ?
-                    </p>
-                    <a href="https://discord.gg/dBha5kxJHV" target="_blank" class="btn-discord">Rejoindre le Discord</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- FOOTER AVEC LE PSEUDO EN RGB -->
         <footer>
-            Créé et Développé par <span class="rgb-text">LeRDragon</span>
+            Développé avec passion par <span class="rgb-text">LeRDragon</span>
         </footer>
     </div>
 
-    <!-- SCRIPT DE COPIE ET FORMULAIRE -->
     <script>
         function copyCommand() {
-            const cmd = document.getElementById("cmdText").innerText;
-            navigator.clipboard.writeText(cmd);
-            const btn = document.querySelector(".btn-copy");
-            btn.innerText = "Copié ! ✅";
-            btn.style.background = "#22c55e";
-            setTimeout(() => {
-                btn.innerText = "Copier";
-                btn.style.background = "#00e5ff";
-            }, 2000);
-        }
-
-        function handleSupportSubmit(event) {
-            event.preventDefault();
-            const btn = document.getElementById("btnSubmit");
-            btn.innerText = "Envoi en cours... ⏳";
-            btn.style.background = "#ffcc00";
-
-            setTimeout(() => {
-                btn.innerText = "Message envoyé avec succès ! ✅";
-                btn.style.background = "#22c55e";
-                document.getElementById("supportForm").reset();
-
+            const cmdText = document.getElementById('cmd').innerText;
+            navigator.clipboard.writeText(cmdText).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.innerText = 'Copié !';
+                btn.style.background = '#facc15';
+                
                 setTimeout(() => {
-                    btn.innerText = "Envoyer au Support";
-                    btn.style.background = "#00e5ff";
-                }, 3000);
-            }, 1000);
+                    btn.innerText = 'Copier';
+                    btn.style.background = '#00f2fe';
+                }, 2000);
+            });
         }
     </script>
 </body>
