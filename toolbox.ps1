@@ -28,13 +28,11 @@ function Show-Header {
 
     Write-Host "`n* PROCHAINES MAJ PREVUES :" -ForegroundColor Magenta
     Write-Host "  - Multi-GPU/Disque/Ping dans le Bench + Note de Perf" -ForegroundColor DarkMagenta
-    Write-Host "  - Températures CPU/GPU + Fréquence de rafraîchissement" -ForegroundColor DarkMagenta
+    Write-Host "  - Temperatues CPU/GPU + Frequence de rafraichissement" -ForegroundColor DarkMagenta
     Write-Host "  - Correction du bug d'ouverture/fermeture rapide en Admin" -ForegroundColor DarkMagenta
-    Write-Host "  - Onglet 5 : Mes Réseaux Sociaux & Support Multilingue (FR/EN)" -ForegroundColor DarkMagenta
+    Write-Host "  - Onglet 5 : Mes Reseaux Sociaux & Support Multilingue (FR/EN)" -ForegroundColor DarkMagenta
     Write-Host "================================================================================" -ForegroundColor DarkCyan
-}
-
-Show-Header
+}Show-Header
 
 Write-Host "`n[1] Detail Config By LeRDragon" -ForegroundColor White
 Write-Host "[2] Informations Reseau & RDP" -ForegroundColor White
