@@ -32,14 +32,69 @@ function Show-Header {
     Write-Host "  - Correction du bug d'ouverture/fermeture rapide en Admin" -ForegroundColor DarkMagenta
     Write-Host "  - Onglet 5 : Mes Reseaux Sociaux & Support Multilingue (FR/EN)" -ForegroundColor DarkMagenta
     Write-Host "================================================================================" -ForegroundColor DarkCyan
-}Show-Header
+}
 
-Write-Host "`n[1] Detail Config By LeRDragon" -ForegroundColor White
-Write-Host "[2] Informations Reseau & RDP" -ForegroundColor White
-Write-Host "[3] Benchmark CPU & Memoire (Dragon Score)" -ForegroundColor White
-Write-Host "[4] Moniteur en temps reel par Dragon" -ForegroundColor White
-Write-Host "[5] Nouveautes & Reseaux Sociaux" -ForegroundColor Cyan
-Write-Host "`n[Q] Quitter" -ForegroundColor Red
-Write-Host "================================================================================" -ForegroundColor DarkCyan
 
-$choice = Read-Host "`nChoisissez un onglet (1-5 ou Q)"
+# ==============================================================================
+# BOUCLE PRINCIPALE DU MENU
+# ==============================================================================
+
+do {
+    Show-Header
+
+    Write-Host "`n[1] Detail Config By LeRDragon" -ForegroundColor White
+    Write-Host "[2] Informations Reseau & RDP" -ForegroundColor White
+    Write-Host "[3] Benchmark CPU & Memoire (Dragon Score)" -ForegroundColor White
+    Write-Host "[4] Moniteur en temps reel par Dragon" -ForegroundColor White
+    Write-Host "[5] Nouveautes & Reseaux Sociaux" -ForegroundColor Cyan
+    Write-Host "`n[Q] Quitter" -ForegroundColor Red
+    Write-Host "================================================================================" -ForegroundColor DarkCyan
+
+    $choice = Read-Host "`nChoisissez un onglet (1-5 ou Q)"
+
+    switch ($choice) {
+        "1" {
+            Clear-Host
+            Write-Host "--- DETAIL CONFIG ---" -ForegroundColor Yellow
+            # Insère ici la fonction ou le code de la config
+            Pause
+        }
+        "2" {
+            Clear-Host
+            Write-Host "--- RESEAU & RDP ---" -ForegroundColor Yellow
+            # Insère ici la fonction ou le code du réseau
+            Pause
+        }
+        "3" {
+            Clear-Host
+            Write-Host "--- BENCHMARK DRAGON SCORE ---" -ForegroundColor Yellow
+            # Insère ici la fonction ou le code du benchmark
+            Pause
+        }
+        "4" {
+            Clear-Host
+            Write-Host "--- MONITEUR TEMPS REEL ---" -ForegroundColor Yellow
+            # Insère ici la fonction ou le code du moniteur
+            Pause
+        }
+        "5" {
+            Clear-Host
+            Write-Host "--- NOUVEAUTES & RESEAUX SOCIAUX ---" -ForegroundColor Cyan
+            Write-Host "Retrouvez-moi sur le site : https://lrdfdragon.github.io" -ForegroundColor White
+            Pause
+        }
+        "Q" {
+            Write-Host "`nA bientot !" -ForegroundColor Green
+            Start-Sleep -Seconds 1
+        }
+        "q" {
+            Write-Host "`nA bientot !" -ForegroundColor Green
+            Start-Sleep -Seconds 1
+        }
+        default {
+            Write-Host "`nChoix invalide, reessayez..." -ForegroundColor Red
+            Start-Sleep -Seconds 1
+        }
+    }
+
+} while ($choice -ne "Q" -and $choice -ne "q")
