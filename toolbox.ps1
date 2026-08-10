@@ -2,15 +2,11 @@
 
 # ==============================================================================
 #                     TOOLBOX BY LERDRAGON - TERMINAL INTERACTIF
-#                        Version v0.6 [Site & Correctif UTF-8]
+#                        Version v0.6 [Navigation Backspace]
 # ==============================================================================
 
-# ------------------------------------------------------------------------------
-# INITIALISATION DU SCRIPT (CONFIGURATION FENETRE & ADMIN)
-# ------------------------------------------------------------------------------
 $Host.UI.RawUI.WindowTitle = "DRAGONRIA TOOLBOX v0.6 - BY LERDRAGON"
 
-# Verification des privileges Administrateur
 $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
 function Show-Header {
@@ -32,7 +28,7 @@ function Show-Header {
     Write-Host "  - v0.3 [06/08/2026] : Integration Benchmark Dragon Score" -ForegroundColor DarkGray
     Write-Host "  - v0.4 [08/08/2026] : Moniteur Temps Reel optimise (sans lag HDD)" -ForegroundColor DarkGray
     Write-Host "  - v0.5 [10/08/2026] : Lancement/Fermeture & Integration Reseaux LeRDragon" -ForegroundColor DarkGray
-    Write-Host "  - v0.6 [11/08/2026] : Lancement Officiel du Site Web & Correction Encodage" -ForegroundColor Green
+    Write-Host "  - v0.6 [11/08/2026] : Ouverture du Site & Navigation avec Backspace" -ForegroundColor Green
     Write-Host "------------------------------------------------------------------" -ForegroundColor DarkGray
     Write-Host "  PROCHAINES MAJ PREVUES (Retour en France 19-21 Aout) :" -ForegroundColor Magenta
     Write-Host "  - Multi-GPU/Disque/Ping dans le Bench + Note de Perf" -ForegroundColor DarkGray
@@ -40,6 +36,20 @@ function Show-Header {
     Write-Host "  - Onglet 5 : Mes Reseaux Sociaux & Support Multilingue (FR/EN)" -ForegroundColor DarkGray
     Write-Host "==================================================================" -ForegroundColor DarkCyan
     Write-Host ""
+}
+
+# Fonction utilitaire pour la navigation de retour
+function Wait-ForBackKey {
+    Write-Host "`n[Backspace / Effacer] Retour au menu  |  [Q] Quitter" -ForegroundColor Yellow
+    do {
+        $key = [System.Console]::ReadKey($true)
+        if ($key.Key -eq [System.ConsoleKey]::Backspace) {
+            return "BACK"
+        }
+        if ($key.KeyChar.ToString().ToUpper() -eq 'Q') {
+            return "QUIT"
+        }
+    } while ($true)
 }
 
 # ------------------------------------------------------------------------------
@@ -58,41 +68,30 @@ function Invoke-ConfigModule {
 
     $RAMModules = Get-CimInstance Win32_PhysicalMemory
     $RAMConsole = ""
-    $RAMFile = ""
     $slotCount = 1
 
     foreach ($ram in $RAMModules) {
         $sizeGB = [math]::Round($ram.Capacity / 1GB, 2)
         $manuf = if ($ram.Manufacturer -and $ram.Manufacturer -notmatch "0000|0012") { $ram.Manufacturer.Trim() } else { "Generique / OEM" }
-        $part = if ($ram.PartNumber -and $ram.PartNumber.Trim() -ne "") { $ram.PartNumber.Trim() } else { "N/A" }
         $speed = if ($ram.Speed) { "$($ram.Speed) MHz" } else { "1600 MHz" }
-        
         $RAMConsole += "  - Slot $slotCount : $sizeGB Go | $speed | Marque : $manuf`n"
-        $RAMFile += "  [Module / Slot $slotCount]`n   - Capacite : $sizeGB Go`n   - Frequence : $speed`n   - Ref : $manuf ($part)`n`n"
         $slotCount++
     }
 
     $GPUs = Get-CimInstance Win32_VideoController
     $GPUConsole = ""
-    $GPUFile = ""
-
     foreach ($g in $GPUs) {
         $vramGB = if ($g.AdapterRAM) { [math]::Round([math]::Abs($g.AdapterRAM) / 1GB, 2) } else { 0 }
-        $vramStr = if ($vramGB -gt 0) { "$vramGB Go" } else { "Partagee" }
         $GPUConsole += "  - $($g.Name) ($vramGB Go VRAM) | Pilote : $($g.DriverVersion)`n"
-        $GPUFile += "`n- Modele GPU : $($g.Name)`n- VRAM : $vramStr`n- Pilote : $($g.DriverVersion)`n"
     }
 
     $DiskConsole = ""
-    $DiskFile = ""
     $LogicalDisks = Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3"
     foreach ($disk in $LogicalDisks) {
         $totalGB = [math]::Round($disk.Size / 1GB, 2)
         $freeGB = [math]::Round($disk.FreeSpace / 1GB, 2)
         $percentFree = [math]::Round(($disk.FreeSpace / $disk.Size) * 100, 1)
-
         $DiskConsole += "  - Disque ($($disk.DeviceID)) : $freeGB Go libres / $totalGB Go ($percentFree % libre)`n"
-        $DiskFile += "`n- Lecteur ($($disk.DeviceID)) : $freeGB Go libres sur $totalGB Go`n"
     }
 
     $CPUFreqBase = if ($CPU.MaxClockSpeed) { "$([math]::Round($CPU.MaxClockSpeed / 1000, 2)) GHz" } else { "N/A" }
@@ -113,17 +112,15 @@ $DiskConsole
 "@
 
     Write-Host $consoleReport -ForegroundColor White
-
     Write-Host "------------------------------------------------------------------" -ForegroundColor DarkGray
     $choice = Read-Host "Voulez-vous enregistrer le rapport complet (.txt) sur le bureau ? (O/N)"
     if ($choice -match "^[oO]") {
         $path = "$env:USERPROFILE\Desktop\Config_PC_$pcName.txt"
         $consoleReport | Set-Content -Path $path -Encoding UTF8
         Write-Host "`n Rapport sauvegarde sur le bureau : $path" -ForegroundColor Green
-    } else {
-        Write-Host "`nRetour au menu." -ForegroundColor Yellow
     }
-    Start-Sleep -Seconds 2
+
+    return Wait-ForBackKey
 }
 
 # ------------------------------------------------------------------------------
@@ -177,7 +174,8 @@ IPv4 : $($wifiInfo.IPv4)
         $netReport | Set-Content -Path $path -Encoding UTF8
         Write-Host "`n Fichier reseau sauvegarde : $path" -ForegroundColor Green
     }
-    Start-Sleep -Seconds 2
+
+    return Wait-ForBackKey
 }
 
 # ------------------------------------------------------------------------------
@@ -214,8 +212,7 @@ function Invoke-BenchmarkModule {
     Write-Host "  DRAGON SCORE GLOBAL : $dragonScore POINTS" -ForegroundColor Cyan -BackgroundColor Black
     Write-Host "==================================================================`n" -ForegroundColor Yellow
 
-    Write-Host "Appuyez sur une touche pour retourner au menu principal..." -ForegroundColor DarkGray
-    [System.Console]::ReadKey($true) | Out-Null
+    return Wait-ForBackKey
 }
 
 # ------------------------------------------------------------------------------
@@ -234,7 +231,7 @@ function Invoke-MonitorModule {
     do {
         Show-Header
         Write-Host "--- [4] MONITEUR EN TEMPS REEL PAR DRAGON ---" -ForegroundColor Cyan
-        Write-Host " Actualisation en direct (Appuyez sur [Q] pour quitter)`n" -ForegroundColor DarkGray
+        Write-Host " Actualisation en direct ([Backspace] Menu  |  [Q] Quitter)`n" -ForegroundColor DarkGray
 
         $cpuUsage = [math]::Round($cpuCounter.NextValue(), 1)
         $cpuBar = Get-ProgressBar -percent $cpuUsage
@@ -266,8 +263,9 @@ function Invoke-MonitorModule {
         $loopCount = 0
         while ($loopCount -lt 15) {
             if ([System.Console]::KeyAvailable) {
-                $key = [System.Console]::ReadKey($true).KeyChar.ToString().ToUpper()
-                if ($key -eq 'Q') { return }
+                $key = [System.Console]::ReadKey($true)
+                if ($key.Key -eq [System.ConsoleKey]::Backspace) { return "BACK" }
+                if ($key.KeyChar.ToString().ToUpper() -eq 'Q') { return "QUIT" }
             }
             Start-Sleep -Milliseconds 100
             $loopCount++
@@ -293,13 +291,14 @@ function Invoke-UpcomingModule {
     Write-Host "  - Benchmark etendu (GPU + Vitesse Disque + Ping Reseau)." -ForegroundColor White
     Write-Host "  - Support Multilingue (FR/EN).`n" -ForegroundColor White
 
-    Write-Host "Appuyez sur une touche pour retourner au menu principal..." -ForegroundColor DarkGray
-    [System.Console]::ReadKey($true) | Out-Null
+    return Wait-ForBackKey
 }
 
 # ------------------------------------------------------------------------------
-# BOUCLE PRINCIPALE ET ECRAN DE FERMETURE
+# BOUCLE PRINCIPALE
 # ------------------------------------------------------------------------------
+$shouldExit = $false
+
 do {
     Show-Header
     Write-Host "  [1] Detail Config By LeRDragon" -ForegroundColor White
@@ -314,19 +313,25 @@ do {
     Write-Host -NoNewline " Choisissez un onglet (1-5 ou Q) : " -ForegroundColor Yellow
 
     $inputKey = [System.Console]::ReadKey($true).KeyChar.ToString().ToUpper()
+    $result = ""
 
     switch ($inputKey) {
-        "1" { Invoke-ConfigModule }
-        "2" { Invoke-NetworkModule }
-        "3" { Invoke-BenchmarkModule }
-        "4" { Invoke-MonitorModule }
-        "5" { Invoke-UpcomingModule }
+        "1" { $result = Invoke-ConfigModule }
+        "2" { $result = Invoke-NetworkModule }
+        "3" { $result = Invoke-BenchmarkModule }
+        "4" { $result = Invoke-MonitorModule }
+        "5" { $result = Invoke-UpcomingModule }
+        "Q" { $shouldExit = $true }
     }
 
-} while ($inputKey -ne "Q")
+    if ($result -eq "QUIT") {
+        $shouldExit = $true
+    }
+
+} while (-not $shouldExit)
 
 # ------------------------------------------------------------------------------
-# ECRAN DE SORTIE SOIGNE (MESSAGE & RESEAUX SOCIAUX)
+# ECRAN DE SORTIE
 # ------------------------------------------------------------------------------
 Clear-Host
 Write-Host "==================================================================" -ForegroundColor DarkCyan
@@ -337,5 +342,5 @@ Write-Host "  - YouTube   : https://www.youtube.com/@LeRDragon" -ForegroundColor
 Write-Host "  - Twitch    : https://www.twitch.tv/lerdragon" -ForegroundColor Magenta
 Write-Host "  - Discord   : https://discord.gg/dBha5kxJHV" -ForegroundColor Blue
 Write-Host "==================================================================" -ForegroundColor DarkCyan
-Write-Host "`nA tres bientot pour la suite !`n" -ForegroundColor Green
-Start-Sleep -Seconds 3
+Write-Host "`nA tres bientot !`n" -ForegroundColor Green
+Start-Sleep -Seconds 2
