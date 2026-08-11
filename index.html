@@ -157,7 +157,7 @@
             justify-content: space-between;
             box-shadow: 0 0 25px rgba(0, 242, 254, 0.15);
             max-width: 700px;
-            margin: 0 auto 20px auto;
+            margin: 0 auto;
         }
 
         .command-text {
@@ -169,13 +169,6 @@
             margin-right: 15px;
         }
 
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
         .copy-btn {
             background: var(--accent-cyan);
             color: #000;
@@ -185,33 +178,12 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
+            flex-shrink: 0;
         }
 
         .copy-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 242, 254, 0.3);
-        }
-
-        .auto-btn {
-            background: rgba(250, 204, 21, 0.15);
-            color: var(--accent-yellow);
-            border: 1px solid var(--accent-yellow);
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .auto-btn:hover {
-            background: var(--accent-yellow);
-            color: #000;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(250, 204, 21, 0.3);
         }
 
         .features {
@@ -369,12 +341,6 @@
                     <code class="command-text" id="cmd">irm https://lrdfdragon.github.io/toolbox.ps1 | iex</code>
                     <button class="copy-btn" onclick="copyCommand()">Copier</button>
                 </div>
-
-                <div class="action-buttons">
-                    <button class="auto-btn" onclick="downloadLauncher()">
-                        ⚡ Lancer en 1 clic (.bat)
-                    </button>
-                </div>
             </section>
 
             <section class="features">
@@ -400,7 +366,6 @@
                     <a href="https://github.com/LrdfDragon/LrdfDragon.github.io/issues" target="_blank" class="support-link">
                         🐛 Signaler un bug (GitHub)
                     </a>
-                    <!-- Lien direct vers Gmail Web -->
                     <a href="https://mail.google.com/mail/?view=cm&fs=1&to=lerdragon67@gmail.com" target="_blank" class="btn-email">
                         ✉️ Nous contacter sur Gmail
                     </a>
@@ -427,7 +392,6 @@
                 second: '2-digit'
             };
             let dateStr = now.toLocaleDateString('fr-FR', options);
-            // Mettre la première lettre en majuscule
             dateStr = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
             document.getElementById('live-clock').innerText = dateStr;
         }
@@ -447,23 +411,6 @@
                     btn.style.background = '#00f2fe';
                 }, 2000);
             });
-        }
-
-        // LANCEUR AUTOMATIQUE (.BAT)
-        function downloadLauncher() {
-            const alertMsg = "⚠️ AVERTISSEMENT DE SÉCURITÉ :\n\nVous allez télécharger un lanceur d'exécution (Lancer_Toolbox.bat).\nLors de son ouverture, Windows vous demandera d'autoriser l'exécution en tant qu'Administrateur pour lancer PowerShell.\n\nSouhaitez-vous continuer ?";
-            
-            if (confirm(alertMsg)) {
-                const batContent = `@echo off\r\ntitle Lancement Dragonria Toolbox...\r\necho Demande des privileges Administrateur...\r\npowershell -Command "Start-Process powershell -ArgumentList '-NoExit -ExecutionPolicy Bypass -Command \\"irm https://lrdfdragon.github.io/toolbox.ps1 | iex\\"' -Verb RunAs"`;
-                
-                const blob = new Blob([batContent], { type: 'application/bat' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = 'Lancer_Toolbox.bat';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
         }
     </script>
 </body>
