@@ -2,7 +2,7 @@
 
 # ==============================================================================
 #                     TOOLBOX BY LERDRAGON - TERMINAL INTERACTIF
-#                        Version v0.6 [Navigation Backspace]
+#                        Version v0.6 [Nav: Backspace / 0]
 # ==============================================================================
 
 $Host.UI.RawUI.WindowTitle = "DRAGONRIA TOOLBOX v0.6 - BY LERDRAGON"
@@ -28,7 +28,7 @@ function Show-Header {
     Write-Host "  - v0.3 [06/08/2026] : Integration Benchmark Dragon Score" -ForegroundColor DarkGray
     Write-Host "  - v0.4 [08/08/2026] : Moniteur Temps Reel optimise (sans lag HDD)" -ForegroundColor DarkGray
     Write-Host "  - v0.5 [10/08/2026] : Lancement/Fermeture & Integration Reseaux LeRDragon" -ForegroundColor DarkGray
-    Write-Host "  - v0.6 [11/08/2026] : Ouverture du Site & Navigation avec Backspace" -ForegroundColor Green
+    Write-Host "  - v0.6 [11/08/2026] : Site Web & Navigation [Backspace] / [0]" -ForegroundColor Green
     Write-Host "------------------------------------------------------------------" -ForegroundColor DarkGray
     Write-Host "  PROCHAINES MAJ PREVUES (Retour en France 19-21 Aout) :" -ForegroundColor Magenta
     Write-Host "  - Multi-GPU/Disque/Ping dans le Bench + Note de Perf" -ForegroundColor DarkGray
@@ -40,13 +40,13 @@ function Show-Header {
 
 # Fonction utilitaire pour la navigation de retour
 function Wait-ForBackKey {
-    Write-Host "`n[Backspace / Effacer] Retour au menu  |  [Q] Quitter" -ForegroundColor Yellow
+    Write-Host "`n[Backspace / Effacer] Menu principal  |  [0] Quitter" -ForegroundColor Yellow
     do {
         $key = [System.Console]::ReadKey($true)
         if ($key.Key -eq [System.ConsoleKey]::Backspace) {
             return "BACK"
         }
-        if ($key.KeyChar.ToString().ToUpper() -eq 'Q') {
+        if ($key.KeyChar -eq '0') {
             return "QUIT"
         }
     } while ($true)
@@ -231,7 +231,7 @@ function Invoke-MonitorModule {
     do {
         Show-Header
         Write-Host "--- [4] MONITEUR EN TEMPS REEL PAR DRAGON ---" -ForegroundColor Cyan
-        Write-Host " Actualisation en direct ([Backspace] Menu  |  [Q] Quitter)`n" -ForegroundColor DarkGray
+        Write-Host " Actualisation en direct ([Backspace] Menu  |  [0] Quitter)`n" -ForegroundColor DarkGray
 
         $cpuUsage = [math]::Round($cpuCounter.NextValue(), 1)
         $cpuBar = Get-ProgressBar -percent $cpuUsage
@@ -265,7 +265,7 @@ function Invoke-MonitorModule {
             if ([System.Console]::KeyAvailable) {
                 $key = [System.Console]::ReadKey($true)
                 if ($key.Key -eq [System.ConsoleKey]::Backspace) { return "BACK" }
-                if ($key.KeyChar.ToString().ToUpper() -eq 'Q') { return "QUIT" }
+                if ($key.KeyChar -eq '0') { return "QUIT" }
             }
             Start-Sleep -Milliseconds 100
             $loopCount++
@@ -307,12 +307,12 @@ do {
     Write-Host "  [4] Moniteur en temps reel par Dragon" -ForegroundColor White
     Write-Host "  [5] Nouveautes & Reseaux Sociaux" -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "  [Q] Quitter" -ForegroundColor Red
+    Write-Host "  [0] Quitter" -ForegroundColor Red
     Write-Host ""
     Write-Host "==================================================================" -ForegroundColor DarkCyan
-    Write-Host -NoNewline " Choisissez un onglet (1-5 ou Q) : " -ForegroundColor Yellow
+    Write-Host -NoNewline " Choisissez un onglet (1-5 ou 0) : " -ForegroundColor Yellow
 
-    $inputKey = [System.Console]::ReadKey($true).KeyChar.ToString().ToUpper()
+    $inputKey = [System.Console]::ReadKey($true).KeyChar.ToString()
     $result = ""
 
     switch ($inputKey) {
@@ -321,7 +321,7 @@ do {
         "3" { $result = Invoke-BenchmarkModule }
         "4" { $result = Invoke-MonitorModule }
         "5" { $result = Invoke-UpcomingModule }
-        "Q" { $shouldExit = $true }
+        "0" { $shouldExit = $true }
     }
 
     if ($result -eq "QUIT") {
