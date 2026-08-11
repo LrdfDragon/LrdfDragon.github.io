@@ -41,7 +41,7 @@
         .status-bar {
             background: rgba(17, 24, 39, 0.9);
             border-bottom: 1px solid var(--border-color);
-            padding: 8px 20px;
+            padding: 10px 20px;
             font-size: 0.82rem;
             color: var(--accent-cyan);
             display: flex;
@@ -51,6 +51,7 @@
             font-family: 'Fira Code', monospace;
             flex-wrap: wrap;
             gap: 10px;
+            z-index: 100;
         }
 
         .status-left, .status-right {
@@ -68,7 +69,7 @@
             box-shadow: 0 0 8px #10b981;
         }
 
-        /* TOOLTIP IP SÉCURISÉE */
+        /* TOOLTIP IP SÉCURISÉE (VERS LE BAS POUR ÉVITER LES FAVORIS) */
         .ip-tooltip {
             position: relative;
             cursor: pointer;
@@ -83,17 +84,17 @@
             color: #fff;
             text-align: center;
             border-radius: 6px;
-            padding: 6px;
+            padding: 8px;
             position: absolute;
-            z-index: 1;
-            bottom: 125%;
+            z-index: 1000;
+            top: 135%;
             left: 50%;
             transform: translateX(-50%);
             opacity: 0;
             transition: opacity 0.3s;
             font-size: 0.75rem;
             border: 1px solid var(--border-color);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.6);
         }
 
         .ip-tooltip:hover .tooltip-text {
@@ -225,19 +226,33 @@
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            gap: 25px;
             margin-top: 50px;
         }
 
-        /* EFFET DE GLISSEMENT FLUIDE (SLIDE-UP) */
+        /* DESIGN MODERNE & ESTHÉTIQUE DES CARTES + SLIDE-UP */
         .card {
-            background: var(--card-bg);
+            background: linear-gradient(145deg, #111827, #0d1322);
             border: 1px solid var(--border-color);
-            padding: 25px;
-            border-radius: 12px;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 30px;
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             opacity: 0;
             transform: translateY(40px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, transparent, var(--accent-cyan), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .card.visible {
@@ -246,41 +261,53 @@
         }
 
         .card:hover {
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-5px);
+            border-color: rgba(0, 242, 254, 0.4);
+            transform: translateY(-6px);
+            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.08);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            display: inline-block;
         }
 
         .card h3 {
-            color: var(--accent-yellow);
-            margin-bottom: 10px;
-            font-size: 1.1rem;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
         }
 
         .card p {
             color: var(--text-muted);
-            font-size: 0.9rem;
-            line-height: 1.5;
+            font-size: 0.92rem;
+            line-height: 1.6;
         }
 
         .support-section {
-            background: var(--card-bg);
+            background: linear-gradient(145deg, #111827, #0d1322);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 30px;
+            border-radius: 16px;
+            padding: 40px;
             margin-top: 50px;
             text-align: center;
         }
 
         .support-section h2 {
-            font-size: 1.4rem;
-            margin-bottom: 10px;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
             color: #fff;
         }
 
         .support-section p {
             color: var(--text-muted);
             font-size: 0.95rem;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .support-buttons {
@@ -288,15 +315,14 @@
             justify-content: center;
             gap: 15px;
             flex-wrap: wrap;
-            margin-top: 20px;
         }
 
         .support-link {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             color: var(--text-main);
             border: 1px solid var(--border-color);
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 12px 22px;
+            border-radius: 10px;
             text-decoration: none;
             font-weight: 600;
             font-size: 0.9rem;
@@ -306,16 +332,17 @@
         .support-link:hover {
             border-color: var(--accent-cyan);
             color: var(--accent-cyan);
+            background: rgba(0, 242, 254, 0.05);
         }
 
         .btn-email {
-            background-color: #1a2236;
-            color: #00f2fe;
-            border: 1px solid #00f2fe;
-            padding: 10px 20px;
-            border-radius: 8px;
+            background-color: rgba(0, 242, 254, 0.1);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            padding: 12px 22px;
+            border-radius: 10px;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
             font-size: 0.9rem;
             transition: all 0.3s ease;
             display: inline-flex;
@@ -324,9 +351,9 @@
         }
 
         .btn-email:hover {
-            background-color: #00f2fe;
+            background-color: var(--accent-cyan);
             color: #0d1117;
-            box-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
         }
 
         footer {
@@ -360,7 +387,7 @@
     <div class="status-bar">
         <div class="status-left">
             <span class="status-dot"></span>
-            <span id="geo-location">Chargement position...</span>
+            <span id="geo-location">Carrara, Toscana</span>
             <span>|</span>
             <span class="ip-tooltip" id="user-ip-container">
                 IP: <span id="user-ip">Chargement...</span>
@@ -368,7 +395,7 @@
             </span>
         </div>
         <div class="status-right">
-            <span id="weather-info">Météo...</span>
+            <span id="weather-info">24°C ☀️</span>
         </div>
     </div>
 
@@ -395,22 +422,25 @@
 
             <section class="features">
                 <div class="card">
-                    <h3>💻 Diagnostic System</h3>
-                    <p>Obtenez une vue détaillée de votre matériel (CPU, GPU, RAM, Disques) et exportez vos données facilement.</p>
+                    <div class="card-icon">💻</div>
+                    <h3>Diagnostic System</h3>
+                    <p>Obtenez une vue détaillée et instantanée de votre matériel (CPU, GPU, RAM, Disques) avec des exports de données simplifiés.</p>
                 </div>
                 <div class="card">
-                    <h3>🌐 Réseau & RDP</h3>
-                    <p>Analyse complète de vos cartes réseau, adresses IP et contrôle interactif des accès à distance.</p>
+                    <div class="card-icon">🌐</div>
+                    <h3>Réseau & RDP</h3>
+                    <p>Réalisez une analyse complète de vos cartes réseau, adresses IP et prenez le contrôle interactif de vos accès à distance.</p>
                 </div>
                 <div class="card">
-                    <h3>⚡ Dragon Score Bench</h3>
-                    <p>Mesurez les performances brutes de votre processeur et de votre mémoire vive en un clic.</p>
+                    <div class="card-icon">⚡</div>
+                    <h3>Dragon Score Bench</h3>
+                    <p>Mesurez et évaluez les performances brutes de votre processeur et de votre mémoire vive en un seul clic.</p>
                 </div>
             </section>
 
-            <section class="support-section support-card card" id="support">
+            <section class="support-section card" id="support">
                 <h2>Besoin d'aide ou un problème à signaler ?</h2>
-                <p>Le projet est en évolution constante. Vous pouvez nous contacter ou ouvrir un ticket pour proposer des fonctionnalités.</p>
+                <p>Le projet évolue en permanence. N'hésitez pas à nous contacter ou à ouvrir un ticket pour suggérer de nouvelles fonctionnalités.</p>
                 
                 <div class="support-buttons">
                     <a href="https://github.com/LrdfDragon/LrdfDragon.github.io/issues" target="_blank" class="support-link">
@@ -429,57 +459,16 @@
     </div>
 
     <script>
-        // RÉCUPÉRATION IP, GÉOLOCALISATION & MÉTÉO AUTOMATIQUE
+        // RÉCUPÉRATION IP FIABLE VIA API ALTERNATIVE
         async function fetchUserInfo() {
             try {
-                const response = await fetch('https://ipapi.co/json/');
+                const response = await fetch('https://api.ipify.org?format=json');
                 const data = await response.json();
-                
-                // Affichage Ville, Région et IP
-                if (data.city && data.region) {
-                    document.getElementById('geo-location').innerText = `${data.city}, ${data.region}`;
-                } else {
-                    document.getElementById('geo-location').innerText = "France";
-                }
-
                 if (data.ip) {
                     document.getElementById('user-ip').innerText = data.ip;
                 }
-
-                // Récupération météo via Open-Meteo avec les coordonnées récupérées
-                if (data.latitude && data.longitude) {
-                    fetchWeather(data.latitude, data.longitude);
-                } else {
-                    document.getElementById('weather-info').innerText = "Météo indisponible";
-                }
             } catch (error) {
-                document.getElementById('geo-location').innerText = "Localisation masquée";
                 document.getElementById('user-ip').innerText = "N/A";
-                document.getElementById('weather-info').innerText = "Météo indisponible";
-            }
-        }
-
-        async function fetchWeather(lat, lon) {
-            try {
-                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-                const weatherData = await weatherRes.json();
-                
-                if (weatherData && weatherData.current_weather) {
-                    const temp = weatherData.current_weather.temperature;
-                    const code = weatherData.current_weather.weathercode;
-                    
-                    // Traduction basique des codes météo WMO
-                    let weatherDesc = "Clair ☀️";
-                    if (code > 0 && code < 4) weatherDesc = "Nuageux ⛅";
-                    else if (code >= 45 && code < 50) weatherDesc = "Brumeux 🌫️";
-                    else if (code >= 50 && code < 70) weatherDesc = "Pluie 🌧️";
-                    else if (code >= 70) weatherDesc = "Neige ❄️";
-                    else if (code >= 95) weatherDesc = "Orage ⚡";
-
-                    document.getElementById('weather-info').innerText = `${weatherDesc} (${temp}°C)`;
-                }
-            } catch (e) {
-                document.getElementById('weather-info').innerText = "Météo indisponible";
             }
         }
 
