@@ -1,359 +1,154 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOOLBOX - LeRDragon</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #0b0f19;
-            --card-bg: #111827;
-            --accent-cyan: #00f2fe;
-            --accent-yellow: #facc15;
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --border-color: #1f2937;
+# ==========================================
+#   DRAGONRIA TOOLBOX - VERSION 0.6
+#   Auteur: LeRDragon
+# ==========================================
+
+$Host.UI.RawUI.WindowTitle = "Dragonria Toolbox v0.6 - System & Network"
+
+function Show-Header {
+    Clear-Host
+    Write-Host "==================================================" -ForegroundColor Cyan
+    Write-Host "            DRAGONRIA TOOLBOX v0.6               " -ForegroundColor Yellow
+    Write-Host "   System & Network Interactive Management Tool  " -ForegroundColor Cyan
+    Write-Host "==================================================" -ForegroundColor Cyan
+    Write-Host ""
+}
+
+function Show-Menu {
+    Show-Header
+    Write-Host " [1] 💻 Diagnostic System (CPU, GPU, RAM, Disques)" -ForegroundColor Green
+    Write-Host " [2] 🌐 Configuration Réseau & Adresses IP" -ForegroundColor Green
+    Write-Host " [3] 🖥️  Gestion accès à distance (RDP)" -ForegroundColor Green
+    Write-Host " [4] ⚡ Dragon Score Bench (Benchmark Périphériques)" -ForegroundColor Green
+    Write-Host " [5] ❌ Quitter" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "Utilisez les flèches [↑/↓], les chiffres [1-5] ou Entrée pour valider." -ForegroundColor Gray
+}
+
+function Invoke-SystemDiag {
+    Show-Header
+    Write-Host "--- DIAGNOSTIC SYSTEME ---" -ForegroundColor Yellow
+    
+    $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
+    $ram = Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum
+    $ramGb = [math]::Round($ram.Sum / 1GB, 2)
+    $gpu = Get-CimInstance Win32_VideoController | Select-Object -First 1
+    
+    Write-Host "Processeur : $($cpu.Name)" -ForegroundColor White
+    Write-Host "Cœurs / Threads : $($cpu.NumberOfCores) / $($cpu.NumberOfLogicalProcessors)" -ForegroundColor White
+    Write-Host "Mémoire RAM Total : $ramGb GB" -ForegroundColor White
+    Write-Host "Carte Graphique : $($gpu.Name)" -ForegroundColor White
+    
+    Write-Host "`n--- STOCKAGE ---" -ForegroundColor Yellow
+    Get-CimInstance Win32_LogicalDisk | Where-Object { $_.DriveType -eq 3 } | ForEach-Object {
+        $free = [math]::Round($_.FreeSpace / 1GB, 2)
+        $total = [math]::Round($_.Size / 1GB, 2)
+        Write-Host "Disque $($_.DeviceID) - Libres : $free GB / Total : $total GB" -ForegroundColor White
+    }
+    
+    Write-Host "`nAppuyez sur une touche pour revenir au menu..." -ForegroundColor Gray
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+
+function Invoke-NetworkDiag {
+    Show-Header
+    Write-Host "--- CONFIGURATION RESEAU ---" -ForegroundColor Yellow
+    
+    Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -notlike "*Loopback*" } | ForEach-Object {
+        Write-Host "Interface : $($_.InterfaceAlias)" -ForegroundColor Cyan
+        Write-Host "  Adresse IP : $($_.IPAddress)" -ForegroundColor White
+        Write-Host "  Masque     : $($_.PrefixLength)" -ForegroundColor White
+    }
+    
+    Write-Host "`n--- TEST D'ACCES INTERNET ---" -ForegroundColor Yellow
+    if (Test-Connection -ComputerName 8.8.8.8 -Count 1 -Quiet) {
+        Write-Host "Statut : Connecté à Internet (Ping OK)" -ForegroundColor Green
+    } else {
+        Write-Host "Statut : Pas d'accès Internet" -ForegroundColor Red
+    }
+    
+    Write-Host "`nAppuyez sur une touche pour revenir au menu..." -ForegroundColor Gray
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+
+function Invoke-RdpManager {
+    Show-Header
+    Write-Host "--- GESTION DU BUREAU A DISTANCE (RDP) ---" -ForegroundColor Yellow
+    
+    $rdpStatus = (Get-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server').fDenyTSConnections
+    if ($rdpStatus -eq 0) {
+        Write-Host "Statut actuel : RDP Activé" -ForegroundColor Green
+    } else {
+        Write-Host "Statut actuel : RDP Désactivé" -ForegroundColor Red
+    }
+    
+    Write-Host "`n [1] Activer le RDP"
+    Write-Host " [2] Désactiver le RDP"
+    Write-Host " [3] Retour au menu principal"
+    
+    $choice = Read-Host "`nVotre choix"
+    switch ($choice) {
+        "1" {
+            Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
+            Enable-NetFirewallRule -DisplayGroup "Remote Desktop" -ErrorAction SilentlyContinue
+            Write-Host "RDP Activé avec succès !" -ForegroundColor Green
+            Start-Sleep -Seconds 2
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        "2" {
+            Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 1
+            Write-Host "RDP Désactivé !" -ForegroundColor Red
+            Start-Sleep -Seconds 2
         }
+    }
+}
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.15) 0%, transparent 50%),
-                linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
-            background-size: 100% 100%, 40px 40px, 40px 40px;
+function Invoke-DragonScore {
+    Show-Header
+    Write-Host "--- DRAGON SCORE BENCH ---" -ForegroundColor Yellow
+    Write-Host "Calcul du score CPU en cours..." -ForegroundColor Gray
+    
+    $sw = [System.Diagnostics.Stopwatch]::StartNew()
+    1..5000000 | ForEach-Object { $null = $_ * $_ }
+    $sw.Stop()
+    
+    $score = [math]::Round(1000000 / $sw.ElapsedMilliseconds)
+    Write-Host "`nScore Dragonria CPU : $score Pts" -ForegroundColor Yellow
+    
+    Write-Host "`nAppuyez sur une touche pour revenir au menu..." -ForegroundColor Gray
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+
+# --- BOUCLE PRINCIPALE INTERACTIVE ---
+$selectedIndex = 0
+$optionsCount = 5
+
+do {
+    Show-Menu
+    
+    # Positionnement du curseur pour la sélection
+    $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+    
+    switch ($key.VirtualKeyCode) {
+        38 { # Flèche Haut
+            $selectedIndex = ($selectedIndex - 1 + $optionsCount) % $optionsCount
         }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            width: 100%;
+        40 { # Flèche Bas
+            $selectedIndex = ($selectedIndex + 1) % $optionsCount
         }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 30px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 50px;
+        13 { # Entrée
+            switch ($selectedIndex) {
+                0 { Invoke-SystemDiag }
+                1 { Invoke-NetworkDiag }
+                2 { Invoke-RdpManager }
+                3 { Invoke-DragonScore }
+                4 { exit }
+            }
         }
-
-        .logo {
-            font-weight: 800;
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            color: var(--accent-cyan);
-        }
-
-        .logo span {
-            color: var(--accent-yellow);
-        }
-
-        .btn-support {
-            background: rgba(250, 204, 21, 0.1);
-            color: var(--accent-yellow);
-            border: 1px solid rgba(250, 204, 21, 0.3);
-            padding: 8px 16px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-support:hover {
-            background: var(--accent-yellow);
-            color: #000;
-            box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
-        }
-
-        .hero {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .badge {
-            display: inline-block;
-            background: rgba(0, 242, 254, 0.1);
-            color: var(--accent-cyan);
-            border: 1px solid rgba(0, 242, 254, 0.2);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        h1 {
-            font-size: 2.8rem;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, #fff, var(--text-muted));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .description {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            max-width: 650px;
-            margin: 0 auto 35px auto;
-            line-height: 1.6;
-        }
-
-        .command-box {
-            background: var(--card-bg);
-            border: 1px solid var(--accent-cyan);
-            border-radius: 12px;
-            padding: 16px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 0 25px rgba(0, 242, 254, 0.15);
-            max-width: 700px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .command-text {
-            font-family: 'Fira Code', monospace;
-            color: var(--accent-cyan);
-            font-size: 0.95rem;
-            overflow-x: auto;
-            white-space: nowrap;
-            margin-right: 15px;
-        }
-
-        .copy-btn {
-            background: var(--accent-cyan);
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
-        }
-
-        .copy-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 242, 254, 0.3);
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 50px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 25px;
-            border-radius: 12px;
-            transition: border-color 0.3s ease;
-        }
-
-        .card:hover {
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .card h3 {
-            color: var(--accent-yellow);
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-
-        .card p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        .support-section {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 30px;
-            margin-top: 40px;
-            text-align: center;
-        }
-
-        .support-section h2 {
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-            color: #fff;
-        }
-
-        .support-section p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-bottom: 20px;
-        }
-
-        .support-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-
-        .support-link {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .support-link:hover {
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-        }
-
-        .btn-email {
-            background-color: #1a2236;
-            color: #00f2fe;
-            border: 1px solid #00f2fe;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-email:hover {
-            background-color: #00f2fe;
-            color: #0d1117;
-            box-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
-        }
-
-        footer {
-            text-align: center;
-            padding: 40px 0;
-            margin-top: 60px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #64748b;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .rgb-text {
-            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00e5ff, #8b00ff, #ff0000);
-            background-size: 400%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: rgbAnimation 8s linear infinite;
-            font-weight: 800;
-        }
-
-        @keyframes rgbAnimation {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 400% 50%; }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <header>
-            <div class="logo">DRAGONRIA <span>TOOLBOX</span></div>
-            <a href="#support" class="btn-support">💬 Support / Contact</a>
-        </header>
-
-        <main>
-            <section class="hero">
-                <div class="badge">🚀 Version 0.6 Disponible</div>
-                <h1>L'Outil Ultime System & Network</h1>
-                <p class="description">
-                    Un terminal interactif puissant conçu pour analyser votre configuration matérielle, 
-                    monitorer vos performances en temps réel et gérer vos paramètres réseau sans prise de tête.
-                </p>
-                
-                <div class="command-box">
-                    <code class="command-text" id="cmd">irm https://lrdfdragon.github.io/toolbox.ps1 | iex</code>
-                    <button class="copy-btn" onclick="copyCommand()">Copier</button>
-                </div>
-            </section>
-
-            <section class="features">
-                <div class="card">
-                    <h3>💻 Diagnostic System</h3>
-                    <p>Obtenez une vue détaillée de votre matériel (CPU, GPU, RAM, Disques) et exportez vos données facilement.</p>
-                </div>
-                <div class="card">
-                    <h3>🌐 Réseau & RDP</h3>
-                    <p>Analyse complète de vos cartes réseau, adresses IP et contrôle interactif des accès à distance.</p>
-                </div>
-                <div class="card">
-                    <h3>⚡ Dragon Score Bench</h3>
-                    <p>Mesurez les performances brutes de votre processeur et de votre mémoire vive en un clic.</p>
-                </div>
-            </section>
-
-            <section class="support-section" id="support">
-                <h2>Besoin d'aide ou un problème à signaler ?</h2>
-                <p>Le projet est en évolution constante. Vous pouvez nous contacter ou ouvrir un ticket pour proposer des fonctionnalités.</p>
-                
-                <div class="support-buttons">
-                    <a href="https://github.com/LrdfDragon/LrdfDragon.github.io/issues" target="_blank" class="support-link">
-                        🐛 Signaler un bug (GitHub)
-                    </a>
-                    <a href="mailto:lerdragon67@gmail.com" class="btn-email">
-                        ✉️ Nous contacter par Mail
-                    </a>
-                </div>
-            </section>
-        </main>
-
-        <footer>
-            Développé avec passion par <span class="rgb-text">LeRDragon</span>
-        </footer>
-    </div>
-
-    <script>
-        function copyCommand() {
-            const cmdText = document.getElementById('cmd').innerText;
-            navigator.clipboard.writeText(cmdText).then(() => {
-                const btn = document.querySelector('.copy-btn');
-                btn.innerText = 'Copié !';
-                btn.style.background = '#facc15';
-                
-                setTimeout(() => {
-                    btn.innerText = 'Copier';
-                    btn.style.background = '#00f2fe';
-                }, 2000);
-            });
-        }
-    </script>
-</body>
-</html>
+        # Support des touches numérotées (chiffres du haut & pavé numérique)
+        { $_ -in 49,97 } { Invoke-SystemDiag }
+        { $_ -in 50,98 } { Invoke-NetworkDiag }
+        { $_ -in 51,99 } { Invoke-RdpManager }
+        { $_ -in 52,100 } { Invoke-DragonScore }
+        { $_ -in 53,101 } { exit }
+    }
+} while ($true)
