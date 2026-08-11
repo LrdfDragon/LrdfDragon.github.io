@@ -16,12 +16,19 @@
             --border-color: #1f2937;
         }
 
+        /* RESET GLOBAL POUR ÉVITER LES SCROLLBARS FORCÉES */
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden; /* Supprime définitivement la barre de défilement horizontale */
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
+        }
+
+        body {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -46,7 +53,6 @@
             backdrop-filter: blur(10px);
             font-family: 'Fira Code', monospace;
             z-index: 100;
-            gap: 15px;
             width: 100%;
         }
 
@@ -61,7 +67,7 @@
         .ip-tooltip { position: relative; cursor: pointer; color: var(--accent-yellow); border-bottom: 1px dashed var(--accent-yellow); }
         .ip-tooltip .tooltip-text {
             visibility: hidden; width: 220px; background-color: #1f2937; color: #fff; text-align: center; border-radius: 6px; padding: 8px;
-            position: absolute; z-index: 1000; top: 150%; left: 50%; transform: translateX(-50%);
+            position: absolute; z-index: 1000; top: 150%; right: 0;
             opacity: 0; transition: opacity 0.3s; font-size: 0.75rem; border: 1px solid var(--border-color); box-shadow: 0 6px 15px rgba(0,0,0,0.6);
         }
         .ip-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
