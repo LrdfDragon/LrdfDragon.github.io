@@ -156,7 +156,10 @@
 
     <div class="container">
         <header>
-            <div class="logo">DRAGONRIA <span>TOOLBOX</span></div>
+            <div class="logo">
+    DRAGONRIA <span>TOOLBOX</span>
+    <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 400; margin-left: 10px;">By LeRDragon</span>
+</div>
         </header>
 
         <main>
@@ -190,8 +193,9 @@
         </main>
     </div>
 
-    <footer>
-        Développé avec passion par <span class="rgb-text">LeRDragon</span>
+    <footer style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+        <div>Créé et Développé par <span class="rgb-text">LeRDragon</span></div>
+        <button onclick="openModal()" style="color: var(--accent-cyan); background: none; border: none; cursor: pointer; font-size: 0.85rem; text-decoration: underline; transition: 0.2s;">À propos de LeRDragon</button>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
@@ -248,5 +252,39 @@
             alert("Commande copiée !");
         }
     </script>
+<!-- FENÊTRE MODALE "À PROPOS" -->
+    <div class="modal-overlay" id="aboutModal" onclick="outsideClick(event)" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; padding: 20px;">
+        <div class="modal-content" style="background: var(--card-bg); border: 1px solid var(--accent-cyan); border-radius: 16px; max-width: 500px; width: 100%; padding: 30px; text-align: left; position: relative; box-shadow: 0 0 30px rgba(0,242,254,0.2); max-height: 80vh; overflow-y: auto;">
+            <button class="close-modal" onclick="closeModal()" style="position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">&times;</button>
+            
+            <h2 style="color: var(--accent-cyan); margin-bottom: 15px; font-size: 1.4rem;">À propos de LeRDragon</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 12px;">💻 Passionné de développement et d'administration système, je conçois des outils modernes et automatisés pour simplifier la vie des utilisateurs.</p>
+            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 12px;">🚀 <strong>Dragonria Toolbox</strong> est mon projet phare : un script PowerShell interactif regroupant des diagnostics matériels et réseaux poussés.</p>
+            
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 15px 0;">
+
+            <h3 style="color: var(--text-main); margin-bottom: 8px; font-size: 1.1rem;">🎮 Mes Jeux & Projets</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 12px;">En dehors du dev, je passe du temps sur des jeux compétitifs et je travaille sur d'autres projets d'automatisation que je partagerai bientôt ici.</p>
+            
+            <h3 style="color: var(--text-main); margin-bottom: 8px; font-size: 1.1rem;">💻 Mes Configs PC</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;"><em>En cours de mise à jour...</em></p>
+        </div>
+    </div>
+
+    <script>
+        // Gestion de la modale "À propos"
+        function openModal() {
+            document.getElementById('aboutModal').style.display = 'flex';
+        }
+        function closeModal() {
+            document.getElementById('aboutModal').style.display = 'none';
+        }
+        function outsideClick(event) {
+            if (event.target === document.getElementById('aboutModal')) {
+                closeModal();
+            }
+        }
+    </script>
+    
 </body>
 </html>
