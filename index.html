@@ -37,24 +37,27 @@
             background-size: 100% 100%, 40px 40px, 40px 40px;
         }
 
-        /* BARRE D'ÉTAT DYNAMIQUE */
+        /* BARRE D'ÉTAT INTELLIGENTE */
         .status-bar {
-            background: rgba(17, 24, 39, 0.8);
+            background: rgba(17, 24, 39, 0.9);
             border-bottom: 1px solid var(--border-color);
             padding: 8px 20px;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             color: var(--accent-cyan);
             display: flex;
             justify-content: space-between;
             align-items: center;
             backdrop-filter: blur(10px);
             font-family: 'Fira Code', monospace;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .status-left {
+        .status-left, .status-right {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
+            flex-wrap: wrap;
         }
 
         .status-dot {
@@ -65,10 +68,43 @@
             box-shadow: 0 0 8px #10b981;
         }
 
+        /* TOOLTIP IP SÉCURISÉE */
+        .ip-tooltip {
+            position: relative;
+            cursor: pointer;
+            color: var(--accent-yellow);
+            border-bottom: 1px dashed var(--accent-yellow);
+        }
+
+        .ip-tooltip .tooltip-text {
+            visibility: hidden;
+            width: 220px;
+            background-color: #1f2937;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 6px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.75rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .ip-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
         .container {
             max-width: 900px;
             margin: 0 auto;
-            padding: 20px 20px 40px 20px;
+            padding: 30px 20px;
             width: 100%;
         }
 
@@ -190,19 +226,28 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
-            margin-top: 40px;
+            margin-top: 50px;
         }
 
+        /* EFFET DE GLISSEMENT FLUIDE (SLIDE-UP) */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             padding: 25px;
             border-radius: 12px;
-            transition: border-color 0.3s ease;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .card.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .card:hover {
             border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
         }
 
         .card h3 {
@@ -222,7 +267,7 @@
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 30px;
-            margin-top: 40px;
+            margin-top: 50px;
             text-align: center;
         }
 
@@ -311,14 +356,19 @@
 </head>
 <body>
 
-    <!-- BARRE D'ÉTAT DU SITE -->
+    <!-- BARRE D'ÉTAT INTELLIGENTE -->
     <div class="status-bar">
         <div class="status-left">
             <span class="status-dot"></span>
-            <span>Serveur GitHub Pages : <strong>En ligne</strong></span>
+            <span id="geo-location">Chargement position...</span>
+            <span>|</span>
+            <span class="ip-tooltip" id="user-ip-container">
+                IP: <span id="user-ip">Chargement...</span>
+                <span class="tooltip-text">🔒 Vous êtes le seul à voir votre propre adresse IP.</span>
+            </span>
         </div>
-        <div class="status-right" id="live-clock">
-            Chargement de l'heure...
+        <div class="status-right">
+            <span id="weather-info">Météo...</span>
         </div>
     </div>
 
@@ -358,7 +408,7 @@
                 </div>
             </section>
 
-            <section class="support-section" id="support">
+            <section class="support-section support-card card" id="support">
                 <h2>Besoin d'aide ou un problème à signaler ?</h2>
                 <p>Le projet est en évolution constante. Vous pouvez nous contacter ou ouvrir un ticket pour proposer des fonctionnalités.</p>
                 
@@ -379,24 +429,79 @@
     </div>
 
     <script>
-        // HORLOGE EN TEMPS RÉEL (DATE COMPLÈTE EN FRANÇAIS)
-        function updateClock() {
-            const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            };
-            let dateStr = now.toLocaleDateString('fr-FR', options);
-            dateStr = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
-            document.getElementById('live-clock').innerText = dateStr;
+        // RÉCUPÉRATION IP, GÉOLOCALISATION & MÉTÉO AUTOMATIQUE
+        async function fetchUserInfo() {
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                
+                // Affichage Ville, Région et IP
+                if (data.city && data.region) {
+                    document.getElementById('geo-location').innerText = `${data.city}, ${data.region}`;
+                } else {
+                    document.getElementById('geo-location').innerText = "France";
+                }
+
+                if (data.ip) {
+                    document.getElementById('user-ip').innerText = data.ip;
+                }
+
+                // Récupération météo via Open-Meteo avec les coordonnées récupérées
+                if (data.latitude && data.longitude) {
+                    fetchWeather(data.latitude, data.longitude);
+                } else {
+                    document.getElementById('weather-info').innerText = "Météo indisponible";
+                }
+            } catch (error) {
+                document.getElementById('geo-location').innerText = "Localisation masquée";
+                document.getElementById('user-ip').innerText = "N/A";
+                document.getElementById('weather-info').innerText = "Météo indisponible";
+            }
         }
-        setInterval(updateClock, 1000);
-        updateClock();
+
+        async function fetchWeather(lat, lon) {
+            try {
+                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+                const weatherData = await weatherRes.json();
+                
+                if (weatherData && weatherData.current_weather) {
+                    const temp = weatherData.current_weather.temperature;
+                    const code = weatherData.current_weather.weathercode;
+                    
+                    // Traduction basique des codes météo WMO
+                    let weatherDesc = "Clair ☀️";
+                    if (code > 0 && code < 4) weatherDesc = "Nuageux ⛅";
+                    else if (code >= 45 && code < 50) weatherDesc = "Brumeux 🌫️";
+                    else if (code >= 50 && code < 70) weatherDesc = "Pluie 🌧️";
+                    else if (code >= 70) weatherDesc = "Neige ❄️";
+                    else if (code >= 95) weatherDesc = "Orage ⚡";
+
+                    document.getElementById('weather-info').innerText = `${weatherDesc} (${temp}°C)`;
+                }
+            } catch (e) {
+                document.getElementById('weather-info').innerText = "Météo indisponible";
+            }
+        }
+
+        fetchUserInfo();
+
+        // EFFET DE GLISSEMENT AU DÉFILEMENT (INTERSECTION OBSERVER)
+        const observerOptions = {
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card').forEach(card => {
+            observer.observe(card);
+        });
 
         // FONCTION COPIER
         function copyCommand() {
