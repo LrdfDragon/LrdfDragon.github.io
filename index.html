@@ -88,11 +88,22 @@
 
         .ip-tooltip { position: relative; cursor: pointer; color: var(--accent-yellow); border-bottom: 1px dashed var(--accent-yellow); }
         .ip-tooltip .tooltip-text {
-            visibility: hidden; width: 220px; background-color: #1f2937; color: #fff; text-align: center; border-radius: 6px; padding: 8px;
+            visibility: hidden; width: 240px; background-color: #1f2937; color: #fff; text-align: center; border-radius: 6px; padding: 8px;
             position: absolute; z-index: 1000; top: 150%; right: 0;
             opacity: 0; transition: opacity 0.3s; font-size: 0.75rem; border: 1px solid var(--border-color); box-shadow: 0 6px 15px rgba(0,0,0,0.6);
         }
         .ip-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
+
+        /* EFFET DE FLOQUAGE / FLOU DE L'IP */
+        .ip-blur {
+            filter: blur(5px);
+            cursor: pointer;
+            transition: filter 0.3s ease;
+            user-select: none;
+        }
+        .ip-blur.revealed {
+            filter: blur(0);
+        }
 
         .container { max-width: 900px; margin: 0 auto; padding: 30px 20px; width: 100%; flex: 1; z-index: 1; }
 
@@ -148,8 +159,8 @@
         </div>
         <div class="status-group">
             <span class="ip-tooltip">
-                IP: <span id="user-ip">Chargement...</span>
-                <span class="tooltip-text">🔒 Vous êtes le seul à voir votre propre adresse IP.</span>
+                IP: <span id="user-ip" class="ip-blur" onclick="toggleIp()">Chargement...</span>
+                <span class="tooltip-text">🔒 IP masquée par sécurité. Cliquez dessus pour l'afficher/la masquer.</span>
             </span>
         </div>
     </div>
@@ -157,9 +168,9 @@
     <div class="container">
         <header>
             <div class="logo">
-    DRAGONRIA <span>TOOLBOX</span>
-    <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 400; margin-left: 10px;">By LeRDragon</span>
-</div>
+                DRAGONRIA <span>TOOLBOX</span>
+                <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 400; margin-left: 10px;">By LeRDragon</span>
+            </div>
         </header>
 
         <main>
@@ -200,6 +211,12 @@
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
+        // Fonction pour afficher/masquer l'IP au clic
+        function toggleIp() {
+            const ipElement = document.getElementById('user-ip');
+            ipElement.classList.toggle('revealed');
+        }
+
         function updateClock() {
             const now = new Date();
             document.getElementById('date-time').innerText = now.toLocaleString('fr-FR', { 
@@ -252,7 +269,8 @@
             alert("Commande copiée !");
         }
     </script>
-<!-- FENÊTRE MODALE "À PROPOS" -->
+
+    <!-- FENÊTRE MODALE "À PROPOS" -->
     <div class="modal-overlay" id="aboutModal" onclick="outsideClick(event)" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content" style="background: var(--card-bg); border: 1px solid var(--accent-cyan); border-radius: 16px; max-width: 500px; width: 100%; padding: 30px; text-align: left; position: relative; box-shadow: 0 0 30px rgba(0,242,254,0.2); max-height: 80vh; overflow-y: auto;">
             <button class="close-modal" onclick="closeModal()" style="position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">&times;</button>
@@ -285,6 +303,5 @@
             }
         }
     </script>
-    
 </body>
 </html>
