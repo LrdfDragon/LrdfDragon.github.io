@@ -90,12 +90,12 @@
 
     <div class="status-bar">
         <div class="status-group">
-            <span id="date-time"></span>
-            <span id="geo-location">Localisation en cours...</span>
+            <span id="date-time">Chargement...</span>
+            <span id="geo-location">Analyse appareil & loc...</span>
         </div>
         <div class="status-group">
             <span class="ip-tooltip">
-                IP: <span id="user-ip">...</span>
+                IP: <span id="user-ip">Chargement...</span>
                 <span class="tooltip-text">🔒 Vous seul voyez votre IP.</span>
             </span>
         </div>
@@ -126,23 +126,37 @@
     </div>
 
     <script>
-        // Date & Heure
+        // 1. Horloge en temps réel
         function updateClock() {
-            document.getElementById('date-time').innerText = new Date().toLocaleString('fr-FR', { 
-                day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' 
+            const now = new Date();
+            document.getElementById('date-time').innerText = now.toLocaleString('fr-FR', { 
+                day: '2-digit', month: '2-digit', year: 'numeric', 
+                hour: '2-digit', minute: '2-digit', second: '2-digit' 
             });
         }
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Geoloc & IP (Dynamique par visiteur via ipapi.co)
+        // 2. Détection de l'appareil + API IP (ipwho.is)
         async function fetchUserInfo() {
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            const deviceType = isMobile ? "📱 Mobile" : "💻 Ordinateur";
+
             try {
-                const response = await fetch('https://ipapi.co/json/');
+                const response = await fetch('https://ipwho.is/');
                 const data = await response.json();
-                if (data.ip) document.getElementById('user-ip').innerText = data.ip;
-                if (data.city) document.getElementById('geo-location').innerText = `${data.city}, ${data.region}, ${data.country_name}`;
-            } catch (e) { document.getElementById('geo-location').innerText = "Loc. indisponible"; }
+                
+                if (data.success) {
+                    document.getElementById('user-ip').innerText = data.ip;
+                    document.getElementById('geo-location').innerText = `${deviceType} | ${data.city}, ${data.region}, ${data.country}`;
+                } else {
+                    document.getElementById('user-ip').innerText = "N/A";
+                    document.getElementById('geo-location').innerText = `${deviceType} | Localisation indisponible`;
+                }
+            } catch (e) { 
+                document.getElementById('user-ip').innerText = "Erreur";
+                document.getElementById('geo-location').innerText = `${deviceType} | Erreur réseau`; 
+            }
         }
         fetchUserInfo();
 
@@ -156,480 +170,6 @@
         function copyCommand() {
             navigator.clipboard.writeText(document.getElementById('cmd').innerText);
             alert("Commande copiée !");
-        }
-    </script>
-</body>
-</html>            background-size: 100% 100%, 40px 40px, 40px 40px;
-        }
-
-        /* BARRE D'ÉTAT INTELLIGENTE */
-        .status-bar {
-            background: rgba(17, 24, 39, 0.9);
-            border-bottom: 1px solid var(--border-color);
-            padding: 10px 20px;
-            font-size: 0.82rem;
-            color: var(--accent-cyan);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            backdrop-filter: blur(10px);
-            font-family: 'Fira Code', monospace;
-            flex-wrap: wrap;
-            gap: 10px;
-            z-index: 100;
-        }
-
-        .status-left, .status-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #10b981;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #10b981;
-        }
-
-        /* TOOLTIP IP SÉCURISÉE (VERS LE BAS POUR ÉVITER LES FAVORIS) */
-        .ip-tooltip {
-            position: relative;
-            cursor: pointer;
-            color: var(--accent-yellow);
-            border-bottom: 1px dashed var(--accent-yellow);
-        }
-
-        .ip-tooltip .tooltip-text {
-            visibility: hidden;
-            width: 220px;
-            background-color: #1f2937;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 8px;
-            position: absolute;
-            z-index: 1000;
-            top: 135%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.75rem;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.6);
-        }
-
-        .ip-tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 30px 20px;
-            width: 100%;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 30px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 40px;
-        }
-
-        .logo {
-            font-weight: 800;
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            color: var(--accent-cyan);
-        }
-
-        .logo span {
-            color: var(--accent-yellow);
-        }
-
-        .btn-support {
-            background: rgba(250, 204, 21, 0.1);
-            color: var(--accent-yellow);
-            border: 1px solid rgba(250, 204, 21, 0.3);
-            padding: 8px 16px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-support:hover {
-            background: var(--accent-yellow);
-            color: #000;
-            box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
-        }
-
-        .hero {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .badge {
-            display: inline-block;
-            background: rgba(0, 242, 254, 0.1);
-            color: var(--accent-cyan);
-            border: 1px solid rgba(0, 242, 254, 0.2);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        h1 {
-            font-size: 2.8rem;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, #fff, var(--text-muted));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .description {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            max-width: 650px;
-            margin: 0 auto 35px auto;
-            line-height: 1.6;
-        }
-
-        .command-box {
-            background: var(--card-bg);
-            border: 1px solid var(--accent-cyan);
-            border-radius: 12px;
-            padding: 16px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 0 25px rgba(0, 242, 254, 0.15);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .command-text {
-            font-family: 'Fira Code', monospace;
-            color: var(--accent-cyan);
-            font-size: 0.95rem;
-            overflow-x: auto;
-            white-space: nowrap;
-            margin-right: 15px;
-        }
-
-        .copy-btn {
-            background: var(--accent-cyan);
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
-        }
-
-        .copy-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 242, 254, 0.3);
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-            margin-top: 50px;
-        }
-
-        /* DESIGN MODERNE & ESTHÉTIQUE DES CARTES + SLIDE-UP */
-        .card {
-            background: linear-gradient(145deg, #111827, #0d1322);
-            border: 1px solid var(--border-color);
-            padding: 30px;
-            border-radius: 16px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            opacity: 0;
-            transform: translateY(40px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(to right, transparent, var(--accent-cyan), transparent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .card:hover {
-            border-color: rgba(0, 242, 254, 0.4);
-            transform: translateY(-6px);
-            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.08);
-        }
-
-        .card:hover::before {
-            opacity: 1;
-        }
-
-        .card-icon {
-            font-size: 2rem;
-            margin-bottom: 15px;
-            display: inline-block;
-        }
-
-        .card h3 {
-            color: var(--text-main);
-            margin-bottom: 12px;
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-
-        .card p {
-            color: var(--text-muted);
-            font-size: 0.92rem;
-            line-height: 1.6;
-        }
-
-        .support-section {
-            background: linear-gradient(145deg, #111827, #0d1322);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 40px;
-            margin-top: 50px;
-            text-align: center;
-        }
-
-        .support-section h2 {
-            font-size: 1.5rem;
-            margin-bottom: 12px;
-            color: #fff;
-        }
-
-        .support-section p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-bottom: 25px;
-        }
-
-        .support-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .support-link {
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 12px 22px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .support-link:hover {
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-            background: rgba(0, 242, 254, 0.05);
-        }
-
-        .btn-email {
-            background-color: rgba(0, 242, 254, 0.1);
-            color: var(--accent-cyan);
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            padding: 12px 22px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-email:hover {
-            background-color: var(--accent-cyan);
-            color: #0d1117;
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
-        }
-
-        footer {
-            text-align: center;
-            padding: 40px 0;
-            margin-top: 60px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #64748b;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .rgb-text {
-            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00e5ff, #8b00ff, #ff0000);
-            background-size: 400%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: rgbAnimation 8s linear infinite;
-            font-weight: 800;
-        }
-
-        @keyframes rgbAnimation {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 400% 50%; }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- BARRE D'ÉTAT INTELLIGENTE -->
-    <div class="status-bar">
-        <div class="status-left">
-            <span class="status-dot"></span>
-            <span id="geo-location">Carrara, Toscana</span>
-            <span>|</span>
-            <span class="ip-tooltip" id="user-ip-container">
-                IP: <span id="user-ip">Chargement...</span>
-                <span class="tooltip-text">🔒 Vous êtes le seul à voir votre propre adresse IP.</span>
-            </span>
-        </div>
-        <div class="status-right">
-            <span id="weather-info">24°C ☀️</span>
-        </div>
-    </div>
-
-    <div class="container">
-        <header>
-            <div class="logo">DRAGONRIA <span>TOOLBOX</span></div>
-            <a href="#support" class="btn-support">💬 Support / Contact</a>
-        </header>
-
-        <main>
-            <section class="hero">
-                <div class="badge">🚀 Version 0.6 Disponible</div>
-                <h1>L'Outil Ultime System & Network</h1>
-                <p class="description">
-                    Un terminal interactif puissant conçu pour analyser votre configuration matérielle, 
-                    monitorer vos performances en temps réel et gérer vos paramètres réseau sans prise de tête.
-                </p>
-                
-                <div class="command-box">
-                    <code class="command-text" id="cmd">irm https://lrdfdragon.github.io/toolbox.ps1 | iex</code>
-                    <button class="copy-btn" onclick="copyCommand()">Copier</button>
-                </div>
-            </section>
-
-            <section class="features">
-                <div class="card">
-                    <div class="card-icon">💻</div>
-                    <h3>Diagnostic System</h3>
-                    <p>Obtenez une vue détaillée et instantanée de votre matériel (CPU, GPU, RAM, Disques) avec des exports de données simplifiés.</p>
-                </div>
-                <div class="card">
-                    <div class="card-icon">🌐</div>
-                    <h3>Réseau & RDP</h3>
-                    <p>Réalisez une analyse complète de vos cartes réseau, adresses IP et prenez le contrôle interactif de vos accès à distance.</p>
-                </div>
-                <div class="card">
-                    <div class="card-icon">⚡</div>
-                    <h3>Dragon Score Bench</h3>
-                    <p>Mesurez et évaluez les performances brutes de votre processeur et de votre mémoire vive en un seul clic.</p>
-                </div>
-            </section>
-
-            <section class="support-section card" id="support">
-                <h2>Besoin d'aide ou un problème à signaler ?</h2>
-                <p>Le projet évolue en permanence. N'hésitez pas à nous contacter ou à ouvrir un ticket pour suggérer de nouvelles fonctionnalités.</p>
-                
-                <div class="support-buttons">
-                    <a href="https://github.com/LrdfDragon/LrdfDragon.github.io/issues" target="_blank" class="support-link">
-                        🐛 Signaler un bug (GitHub)
-                    </a>
-                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=lerdragon67@gmail.com" target="_blank" class="btn-email">
-                        ✉️ Nous contacter sur Gmail
-                    </a>
-                </div>
-            </section>
-        </main>
-
-        <footer>
-            Développé avec passion par <span class="rgb-text">LeRDragon</span>
-        </footer>
-    </div>
-
-    <script>
-        // RÉCUPÉRATION IP FIABLE VIA API ALTERNATIVE
-        async function fetchUserInfo() {
-            try {
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                if (data.ip) {
-                    document.getElementById('user-ip').innerText = data.ip;
-                }
-            } catch (error) {
-                document.getElementById('user-ip').innerText = "N/A";
-            }
-        }
-
-        fetchUserInfo();
-
-        // EFFET DE GLISSEMENT AU DÉFILEMENT (INTERSECTION OBSERVER)
-        const observerOptions = {
-            threshold: 0.15
-        };
-
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.card').forEach(card => {
-            observer.observe(card);
-        });
-
-        // FONCTION COPIER
-        function copyCommand() {
-            const cmdText = document.getElementById('cmd').innerText;
-            navigator.clipboard.writeText(cmdText).then(() => {
-                const btn = document.querySelector('.copy-btn');
-                btn.innerText = 'Copié !';
-                btn.style.background = '#facc15';
-                
-                setTimeout(() => {
-                    btn.innerText = 'Copier';
-                    btn.style.background = '#00f2fe';
-                }, 2000);
-            });
         }
     </script>
 </body>
