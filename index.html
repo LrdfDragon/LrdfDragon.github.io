@@ -25,6 +25,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             background-image: 
                 radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.15) 0%, transparent 50%),
                 linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
@@ -34,10 +35,10 @@
 
         /* BARRE D'ÉTAT RESPONSIVE */
         .status-bar {
-            background: rgba(17, 24, 39, 0.9);
+            background: rgba(17, 24, 39, 0.95);
             border-bottom: 1px solid var(--border-color);
             padding: 8px 20px;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: var(--accent-cyan);
             display: flex;
             justify-content: space-between;
@@ -46,16 +47,17 @@
             font-family: 'Fira Code', monospace;
             z-index: 100;
             gap: 15px;
+            width: 100%;
         }
 
-        .status-group { display: flex; gap: 15px; align-items: center; }
+        .status-group { display: flex; gap: 12px; align-items: center; }
 
         @media (max-width: 768px) {
             .status-bar { flex-direction: column; padding: 10px; text-align: center; gap: 8px; }
             .status-group { flex-wrap: wrap; justify-content: center; }
         }
 
-        /* TOOLTIP IP */
+        /* TOOLTIP IP SÉCURISÉE */
         .ip-tooltip { position: relative; cursor: pointer; color: var(--accent-yellow); border-bottom: 1px dashed var(--accent-yellow); }
         .ip-tooltip .tooltip-text {
             visibility: hidden; width: 220px; background-color: #1f2937; color: #fff; text-align: center; border-radius: 6px; padding: 8px;
@@ -64,43 +66,70 @@
         }
         .ip-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
 
-        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; width: 100%; }
+        .container { max-width: 900px; margin: 0 auto; padding: 30px 20px; width: 100%; flex: 1; }
 
-        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 30px; border-bottom: 1px solid var(--border-color); margin-bottom: 40px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 25px; border-bottom: 1px solid var(--border-color); margin-bottom: 35px; }
         .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: 2px; color: var(--accent-cyan); }
         .logo span { color: var(--accent-yellow); }
 
-        .hero { text-align: center; margin-bottom: 60px; }
-        h1 { font-size: 2.5rem; margin-bottom: 20px; background: linear-gradient(to right, #fff, var(--text-muted)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero { text-align: center; margin-bottom: 50px; }
+        .badge {
+            display: inline-block; background: rgba(0, 242, 254, 0.1); color: var(--accent-cyan); border: 1px solid rgba(0, 242, 254, 0.2);
+            padding: 5px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;
+        }
+        h1 { font-size: 2.3rem; margin-bottom: 15px; background: linear-gradient(to right, #fff, var(--text-muted)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .command-box { background: var(--card-bg); border: 1px solid var(--accent-cyan); border-radius: 12px; padding: 16px; display: flex; align-items: center; justify-content: space-between; max-width: 700px; margin: 0 auto; }
-        .command-text { font-family: 'Fira Code', monospace; color: var(--accent-cyan); font-size: 0.9rem; overflow-x: auto; white-space: nowrap; margin-right: 10px; }
-        .copy-btn { background: var(--accent-cyan); color: #000; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .description {
+            font-size: 0.98rem; color: var(--text-muted); max-width: 650px; margin: 0 auto 25px auto; line-height: 1.5;
+        }
 
-        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 50px; }
+        .command-box { background: var(--card-bg); border: 1px solid var(--accent-cyan); border-radius: 12px; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; max-width: 700px; margin: 0 auto; box-shadow: 0 0 20px rgba(0,242,254,0.1); }
+        .command-text { font-family: 'Fira Code', monospace; color: var(--accent-cyan); font-size: 0.85rem; overflow-x: auto; white-space: nowrap; margin-right: 10px; }
+        .copy-btn { background: var(--accent-cyan); color: #000; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .copy-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 40px; }
         .card { background: linear-gradient(145deg, #111827, #0d1322); border: 1px solid var(--border-color); padding: 25px; border-radius: 16px; transition: transform 0.4s ease; opacity: 0; transform: translateY(30px); }
         .card.visible { opacity: 1; transform: translateY(0); }
-        .card h3 { color: var(--text-main); margin-bottom: 10px; }
-        .card p { color: var(--text-muted); font-size: 0.9rem; }
+        .card h3 { color: var(--text-main); margin-bottom: 10px; font-size: 1.1rem; }
+        .card p { color: var(--text-muted); font-size: 0.88rem; line-height: 1.5; }
 
-        footer { text-align: center; padding: 40px; margin-top: 50px; border-top: 1px solid rgba(255, 255, 255, 0.1); color: #64748b; }
+        footer { text-align: center; padding: 30px 0; border-top: 1px solid rgba(255, 255, 255, 0.05); color: #64748b; font-size: 0.95rem; }
+
+        /* EFFET RGB ANIMÉ POUR LE PSEUDO */
+        .rgb-text {
+            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00e5ff, #8b00ff, #ff0000);
+            background-size: 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rgbAnimation 8s linear infinite;
+            font-weight: 800;
+        }
+
+        @keyframes rgbAnimation {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 400% 50%; }
+        }
     </style>
 </head>
 <body>
 
+    <!-- BARRE D'ÉTAT -->
     <div class="status-bar">
         <div class="status-group">
             <span id="date-time">Chargement...</span>
+            <span>|</span>
             <span id="geo-location">Analyse appareil & loc...</span>
         </div>
         <div class="status-group">
             <span class="ip-tooltip">
                 IP: <span id="user-ip">Chargement...</span>
-                <span class="tooltip-text">🔒 Vous seul voyez votre IP.</span>
+                <span class="tooltip-text">🔒 Vous êtes le seul à voir votre propre adresse IP.</span>
             </span>
         </div>
     </div>
 
+    <!-- CONTENU PRINCIPAL -->
     <div class="container">
         <header>
             <div class="logo">DRAGONRIA <span>TOOLBOX</span></div>
@@ -108,7 +137,12 @@
 
         <main>
             <section class="hero">
+                <div class="badge">🚀 Terminal Script PowerShell</div>
                 <h1>L'Outil Ultime System & Network</h1>
+                <p class="description">
+                    Un outil interactif puissant conçu pour analyser votre configuration matérielle, 
+                    monitorer vos performances en temps réel et gérer vos paramètres réseau directement depuis votre terminal.
+                </p>
                 <div class="command-box">
                     <code class="command-text" id="cmd">irm https://lrdfdragon.github.io/toolbox.ps1 | iex</code>
                     <button class="copy-btn" onclick="copyCommand()">Copier</button>
@@ -116,14 +150,26 @@
             </section>
 
             <section class="features">
-                <div class="card"><h3>💻 Diagnostic System</h3><p>Analyse matérielle détaillée en temps réel.</p></div>
-                <div class="card"><h3>🌐 Réseau & RDP</h3><p>Gestion réseau et accès à distance sécurisés.</p></div>
-                <div class="card"><h3>⚡ Dragon Score Bench</h3><p>Benchmark de performance en un clic.</p></div>
+                <div class="card">
+                    <h3>💻 Diagnostic System</h3>
+                    <p>Obtenez une vue détaillée et instantanée de votre matériel (CPU, GPU, RAM, Disques) avec des exports de données simplifiés.</p>
+                </div>
+                <div class="card">
+                    <h3>🌐 Réseau & RDP</h3>
+                    <p>Réalisez une analyse complète de vos cartes réseau, adresses IP et gérez vos accès à distance en toute sécurité.</p>
+                </div>
+                <div class="card">
+                    <h3>⚡ Dragon Score Bench</h3>
+                    <p>Mesurez et évaluez les performances brutes de votre processeur et de votre mémoire vive en un seul clic.</p>
+                </div>
             </section>
         </main>
-
-        <footer>Développé avec passion par LeRDragon</footer>
     </div>
+
+    <!-- FOOTER -->
+    <footer>
+        Développé avec passion par <span class="rgb-text">LeRDragon</span>
+    </footer>
 
     <script>
         // 1. Horloge en temps réel
@@ -137,7 +183,7 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 2. Détection de l'appareil + API IP (ipwho.is)
+        // 2. Détection appareil + API IP (ipwho.is)
         async function fetchUserInfo() {
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
             const deviceType = isMobile ? "📱 Mobile" : "💻 Ordinateur";
@@ -160,13 +206,13 @@
         }
         fetchUserInfo();
 
-        // Scroll Animation
+        // Scroll Animation des cartes
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
         });
         document.querySelectorAll('.card').forEach(card => observer.observe(card));
 
-        // Copy
+        // Fonction Copier
         function copyCommand() {
             navigator.clipboard.writeText(document.getElementById('cmd').innerText);
             alert("Commande copiée !");
