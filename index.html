@@ -211,11 +211,12 @@
             margin-bottom: 20px;
         }
 
-        .support-links {
+        .support-buttons {
             display: flex;
             justify-content: center;
             gap: 15px;
             flex-wrap: wrap;
+            margin-top: 20px;
         }
 
         .support-link {
@@ -233,6 +234,27 @@
         .support-link:hover {
             border-color: var(--accent-cyan);
             color: var(--accent-cyan);
+        }
+
+        .btn-email {
+            background-color: #1a2236;
+            color: #00f2fe;
+            border: 1px solid #00f2fe;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-email:hover {
+            background-color: #00f2fe;
+            color: #0d1117;
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
         }
 
         footer {
@@ -301,8 +323,14 @@
             <section class="support-section" id="support">
                 <h2>Besoin d'aide ou un problème à signaler ?</h2>
                 <p>Le projet est en évolution constante. Vous pouvez nous contacter ou ouvrir un ticket pour proposer des fonctionnalités.</p>
-                <div class="support-links">
-                    <a href="https://github.com/LrdfDragon/LrdfDragon.github.io/issues" target="_blank" class="support-link">🐛 Signaler un bug (GitHub)</a>
+                
+                <div class="support-buttons">
+                    <a href="https://github.com/LrdfDragon/LrdfDragon.github.io/issues" target="_blank" class="support-link">
+                        🐛 Signaler un bug (GitHub)
+                    </a>
+                    <a href="mailto:lerdragon67@gmail.com" class="btn-email">
+                        ✉️ Nous contacter par Mail
+                    </a>
                 </div>
             </section>
         </main>
