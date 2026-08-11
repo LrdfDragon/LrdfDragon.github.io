@@ -7,8 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --card-bg: #111827;
+            --card-bg: rgba(17, 24, 39, 0.85);
             --accent-cyan: #00f2fe;
             --accent-yellow: #facc15;
             --text-main: #f3f4f6;
@@ -16,14 +15,12 @@
             --border-color: #1f2937;
         }
 
-        /* RESET GLOBAL POUR ÉVITER LES SCROLLBARS FORCÉES */
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         html, body {
             width: 100%;
             height: 100%;
-            overflow-x: hidden; /* Supprime définitivement la barre de défilement horizontale */
-            background-color: var(--bg-color);
+            overflow-x: hidden;
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
         }
@@ -33,16 +30,25 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.15) 0%, transparent 50%),
-                linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
-            background-size: 100% 100%, 40px 40px, 40px 40px;
+        }
+
+        /* ARRIÈRE-PLAN DRAGON + PARTICULES */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: #0b0f19;
+            /* Ton image perso dragon-bg.png avec un léger voile sombre pour la lisibilité */
+            background-image: linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.85)), url('dragon-bg.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
         }
 
         /* BARRE D'ÉTAT RESPONSIVE */
         .status-bar {
-            background: rgba(17, 24, 39, 0.95);
+            background: rgba(17, 24, 39, 0.9);
             border-bottom: 1px solid var(--border-color);
             padding: 8px 20px;
             font-size: 0.72rem;
@@ -72,7 +78,7 @@
         }
         .ip-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
 
-        .container { max-width: 900px; margin: 0 auto; padding: 30px 20px; width: 100%; flex: 1; }
+        .container { max-width: 900px; margin: 0 auto; padding: 30px 20px; width: 100%; flex: 1; z-index: 1; }
 
         header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 25px; border-bottom: 1px solid var(--border-color); margin-bottom: 35px; }
         .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: 2px; color: var(--accent-cyan); }
@@ -89,18 +95,18 @@
             font-size: 0.98rem; color: var(--text-muted); max-width: 650px; margin: 0 auto 25px auto; line-height: 1.5;
         }
 
-        .command-box { background: var(--card-bg); border: 1px solid var(--accent-cyan); border-radius: 12px; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; max-width: 700px; margin: 0 auto; box-shadow: 0 0 20px rgba(0,242,254,0.1); }
+        .command-box { background: var(--card-bg); border: 1px solid var(--accent-cyan); border-radius: 12px; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; max-width: 700px; margin: 0 auto; box-shadow: 0 0 20px rgba(0,242,254,0.1); backdrop-filter: blur(5px); }
         .command-text { font-family: 'Fira Code', monospace; color: var(--accent-cyan); font-size: 0.85rem; overflow-x: auto; white-space: nowrap; margin-right: 10px; }
         .copy-btn { background: var(--accent-cyan); color: #000; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .copy-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
         .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 40px; }
-        .card { background: linear-gradient(145deg, #111827, #0d1322); border: 1px solid var(--border-color); padding: 25px; border-radius: 16px; transition: transform 0.4s ease; opacity: 0; transform: translateY(30px); }
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: 16px; transition: transform 0.4s ease; opacity: 0; transform: translateY(30px); backdrop-filter: blur(5px); }
         .card.visible { opacity: 1; transform: translateY(0); }
         .card h3 { color: var(--text-main); margin-bottom: 10px; font-size: 1.1rem; }
         .card p { color: var(--text-muted); font-size: 0.88rem; line-height: 1.5; }
 
-        footer { text-align: center; padding: 30px 0; border-top: 1px solid rgba(255, 255, 255, 0.05); color: #64748b; font-size: 0.95rem; }
+        footer { text-align: center; padding: 30px 0; border-top: 1px solid rgba(255, 255, 255, 0.05); color: #64748b; font-size: 0.95rem; z-index: 1; background: rgba(11, 15, 25, 0.8); backdrop-filter: blur(5px); }
 
         /* EFFET RGB ANIMÉ POUR LE PSEUDO */
         .rgb-text {
@@ -119,6 +125,9 @@
     </style>
 </head>
 <body>
+
+    <!-- ARRIÈRE-PLAN PARTICULES & DRAGON -->
+    <div id="particles-js"></div>
 
     <!-- BARRE D'ÉTAT -->
     <div class="status-bar">
@@ -177,6 +186,8 @@
         Développé avec passion par <span class="rgb-text">LeRDragon</span>
     </footer>
 
+    <!-- SCRIPTS PARTICULES -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
         // 1. Horloge en temps réel
         function updateClock() {
@@ -223,6 +234,25 @@
             navigator.clipboard.writeText(document.getElementById('cmd').innerText);
             alert("Commande copiée !");
         }
+
+        // 3. Configuration des Particules
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#00f2fe" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.4, "random": true },
+                "size": { "value": 3, "random": true },
+                "line_linked": { "enable": true, "distance": 150, "color": "#00f2fe", "opacity": 0.2, "width": 1 },
+                "move": { "enable": true, "speed": 1.5, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
+            },
+            "interactivity": { 
+                "detect_on": "canvas", 
+                "events": { "onhover": { "enable": true, "mode": "repulse" } },
+                "modes": { "repulse": { "distance": 100, "duration": 0.4 } }
+            },
+            "retina_detect": true
+        });
     </script>
 </body>
 </html>
