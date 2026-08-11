@@ -30,21 +30,35 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            /* FOND UNUNI POUR LE BODY */
+            background-color: #0b0f19;
         }
-        /* ARRIÈRE-PLAN DRAGON + PARTICULES */
-        #particles-js {
+
+        /* NOUVEAU FOND IMAGE FIXE (tout au fond) */
+        body::before {
+            content: "";
             position: fixed;
-            width: 100vw;
-            height: 100vh;
             top: 0;
             left: 0;
-            z-index: -1;
-            background-color: #0b0f19;
-            background-image: linear-gradient(rgba(11, 15, 25, 0.7), rgba(11, 15, 25, 0.8)), url('dragon-bg.png');
+            width: 100vw;
+            height: 100vh;
+            z-index: -2; /* Derrière tout */
+            background-image: url('dragon-bg.png');
             background-repeat: no-repeat;
             background-position: center;
             background-size: cover;
-            pointer-events: none; /* Empêche le fond de bloquer les clics */
+            filter: brightness(0.3); /* Assombrit l'image pour la lisibilité */
+        }
+
+        /* NOUVEAU CALQUE PARTICULES (entre le fond et le contenu) */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none; /* Laisse les clics passer au travers */
         }
 
         /* BARRE D'ÉTAT RESPONSIVE */
@@ -127,7 +141,7 @@
 </head>
 <body>
 
-    <!-- ARRIÈRE-PLAN PARTICULES & DRAGON -->
+    <!-- ARRIÈRE-PLAN PARTICULES (calque du dessus) -->
     <div id="particles-js"></div>
 
     <!-- BARRE D'ÉTAT -->
@@ -187,7 +201,7 @@
         Développé avec passion par <span class="rgb-text">LeRDragon</span>
     </footer>
 
-    <!-- SCRIPTS PARTICULES -->
+    <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
         // 1. Horloge en temps réel
@@ -222,27 +236,26 @@
                 document.getElementById('geo-location').innerText = `${deviceType} | Erreur réseau`; 
             }
         }
-        
-        // 3. Configuration des Particules
+        fetchUserInfo();
+
+        // 3. Configuration UNIQUE des Particules (version optimisée PC/Mobile)
         particlesJS("particles-js", {
             "particles": {
-                "number": { "value": 70, "density": { "enable": true, "value_area": 800 } },
+                "number": { "value": 75, "density": { "enable": true, "value_area": 800 } },
                 "color": { "value": "#00f2fe" },
                 "shape": { "type": "circle" },
-                "opacity": { "value": 0.6, "random": true },
+                "opacity": { "value": 0.55, "random": true },
                 "size": { "value": 3, "random": true },
                 "line_linked": { "enable": true, "distance": 150, "color": "#00f2fe", "opacity": 0.3, "width": 1 },
                 "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
             },
             "interactivity": { 
-                "detect_on": "window", 
+                "detect_on": "window", // Important pour que la souris soit détectée sur tout la fenêtre PC
                 "events": { "onhover": { "enable": true, "mode": "repulse" } },
                 "modes": { "repulse": { "distance": 100, "duration": 0.4 } }
             },
             "retina_detect": true
-        }); 
-        
-        fetchUserInfo();
+        });
 
         // Scroll Animation des cartes
         const observer = new IntersectionObserver((entries) => {
@@ -255,25 +268,6 @@
             navigator.clipboard.writeText(document.getElementById('cmd').innerText);
             alert("Commande copiée !");
         }
-
-        // 3. Configuration des Particules
-        particlesJS("particles-js", {
-            "particles": {
-                "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#00f2fe" },
-                "shape": { "type": "circle" },
-                "opacity": { "value": 0.4, "random": true },
-                "size": { "value": 3, "random": true },
-                "line_linked": { "enable": true, "distance": 150, "color": "#00f2fe", "opacity": 0.2, "width": 1 },
-                "move": { "enable": true, "speed": 1.5, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
-            },
-            "interactivity": { 
-                "detect_on": "canvas", 
-                "events": { "onhover": { "enable": true, "mode": "repulse" } },
-                "modes": { "repulse": { "distance": 100, "duration": 0.4 } }
-            },
-            "retina_detect": true
-        });
     </script>
 </body>
 </html>
