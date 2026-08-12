@@ -116,7 +116,7 @@ h1 .glitch{color:var(--magenta);text-shadow:0 0 18px rgba(255,47,176,.55)}
 .c1{background:#ff5f57}.c2{background:#febc2e}.c3{background:#28c840}
 .term-top .term-title{margin:0 0 0 4px;font-size:.72rem;color:var(--muted);letter-spacing:1px;line-height:normal;display:inline-block}
 .term-body{padding:18px;font-size:.8rem;min-height:230px}
-.term-body .l{opacity:0;animation:type .01s forwards}
+.term-body .l{opacity:1;margin-bottom:6px}
 .term-body .p{color:var(--lime)}
 .term-body .k{color:var(--cyan)}
 .term-body .v{color:var(--text)}
@@ -124,7 +124,6 @@ h1 .glitch{color:var(--magenta);text-shadow:0 0 18px rgba(255,47,176,.55)}
 .term-body .bar{color:var(--magenta)}
 .cursor{display:inline-block;width:8px;height:15px;background:var(--cyan);vertical-align:-2px;animation:blink 1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
-@keyframes type{to{opacity:1}}
 
 /* ── features ── */
 section.block{padding:60px 0}
@@ -136,9 +135,7 @@ section.block{padding:60px 0}
 .card{
   background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:26px 22px;
   position:relative;transition:.25s;overflow:hidden;
-  opacity:0;transform:translateY(16px);
 }
-.card.in{opacity:1;transform:none}
 .card:hover{border-color:var(--cyan);transform:translateY(-4px)}
 .card:hover::after{opacity:1}
 .card::after{content:"";position:absolute;inset:0;background:radial-gradient(300px at var(--mx,50%) var(--my,0%),rgba(34,224,255,.1),transparent 70%);opacity:0;transition:.3s;pointer-events:none}
@@ -154,22 +151,31 @@ footer{border-top:1px solid var(--line);padding:34px 0;text-align:center;color:v
 .footer-links{display:flex;justify-content:center;align-items:center;gap:15px;margin-top:8px}
 footer button{background:none;border:none;color:var(--cyan);cursor:pointer;font-family:inherit;font-size:.78rem;text-decoration:underline;padding:0}
 
-/* ── modales ── */
-.overlay{position:fixed;inset:0;background:rgba(2,4,8,.8);backdrop-filter:blur(10px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+/* ── modales (Corrigé pour l'interaction) ── */
+.overlay{
+  position:fixed;inset:0;background:rgba(2,4,8,.85);backdrop-filter:blur(10px);
+  z-index:100;display:none;align-items:center;justify-content:center;padding:20px;
+}
 .overlay.on{display:flex}
-.modal{background:var(--panel);border:1px solid var(--cyan);border-radius:14px;max-width:520px;width:100%;padding:32px;position:relative;max-height:82vh;overflow-y:auto;box-shadow:0 0 40px rgba(34,224,255,.2)}
+.modal{
+  background:var(--panel);border:1px solid var(--cyan);border-radius:14px;
+  max-width:520px;width:100%;padding:32px;position:relative;max-height:82vh;
+  overflow-y:auto;box-shadow:0 0 40px rgba(34,224,255,.2);text-align:left;
+}
 .modal h2{font-family:'Chakra Petch';color:var(--cyan);margin-bottom:14px}
-.modal h3{font-family:'Chakra Petch';font-size:1rem;margin:18px 0 8px}
+.modal h3{font-family:'Chakra Petch';font-size:1rem;margin:18px 0 8px;color:var(--text)}
 .modal p{color:var(--muted);font-size:.86rem;margin-bottom:10px}
 .modal hr{border:0;border-top:1px solid var(--line);margin:18px 0}
-.modal .x{position:absolute;top:14px;right:18px;background:none;border:none;color:var(--text);font-size:1.6rem;cursor:pointer;line-height:1}
+.modal .x{
+  position:absolute;top:14px;right:18px;background:none;border:none;
+  color:var(--text);font-size:1.6rem;cursor:pointer;line-height:1;
+}
 
 @media(max-width:820px){
   .hero{grid-template-columns:1fr;gap:32px}
   .grid3{grid-template-columns:1fr}
   .statusbar .inner{font-size:.66rem}
 }
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.card{opacity:1;transform:none}}
 </style>
 </head>
 <body>
@@ -296,7 +302,7 @@ function copyCmd(b){
   });
 }
 
-// terminal animé (fictif, purement décoratif)
+// terminal
 const lines=[
  '<span class="p">PS&gt;</span> <span class="v">dragonria --scan</span>',
  '<span class="m">Initialisation du diagnostic…</span>',
@@ -308,24 +314,20 @@ const lines=[
  '<span class="p">PS&gt;</span> <span class="cursor"></span>'
 ];
 const tb=document.getElementById('tbody');
-lines.forEach((l,i)=>{
+lines.forEach(l=>{
   const div=document.createElement('div');
-  div.className='l';div.innerHTML=l;div.style.animationDelay=(i*.42)+'s';
+  div.className='l';div.innerHTML=l;
   tb.appendChild(div);
 });
 
-// reveal cartes
-const io=new IntersectionObserver(es=>es.forEach((e,i)=>{if(e.isIntersecting){e.target.style.transitionDelay=(i*.09)+'s';e.target.classList.add('in')}}),{threshold:.2});
-document.querySelectorAll('.card').forEach(c=>io.observe(c));
-
-// glow suivant la souris sur les cartes
+// glow cartes
 document.querySelectorAll('.card').forEach(c=>c.addEventListener('mousemove',e=>{
   const r=c.getBoundingClientRect();
   c.style.setProperty('--mx',(e.clientX-r.left)+'px');
   c.style.setProperty('--my',(e.clientY-r.top)+'px');
 }));
 
-// modales globales
+// modales fonctions
 function openModal(id){document.getElementById(id).classList.add('on')}
 function closeModal(id){document.getElementById(id).classList.remove('on')}
 document.addEventListener('keydown',e=>{
