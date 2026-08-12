@@ -322,7 +322,7 @@ document.querySelectorAll('.card').forEach(c=>io.observe(c));
 document.querySelectorAll('.card').forEach(c=>c.addEventListener('mousemove',e=>{
   const r=c.getBoundingClientRect();
   c.style.setProperty('--mx',(e.clientX-r.left)+'px');
-  c.style.setProperty('--my',(e.clientY-r.top)+'px'));
+  c.style.setProperty('--my',(e.clientY-r.top)+'px');
 }));
 
 // modales globales
