@@ -233,7 +233,7 @@ footer button{background:none;border:none;color:var(--cyan);cursor:pointer;font-
   <div class="footer-links">
     <button onclick="openModal('aboutModal')">À propos de LeRDragon</button>
     <span style="color:var(--line);">|</span>
-    <button onclick="openModal('legalModal')">Mentions Légales</button>
+    <button onclick="openModal('legalModal')">Mentions Légales & ToS</button>
   </div>
 </footer>
 
@@ -252,18 +252,17 @@ footer button{background:none;border:none;color:var(--cyan);cursor:pointer;font-
   </div>
 </div>
 
-<!-- MODALE "MENTIONS LÉGALES" -->
+<!-- MODALE "MENTIONS LÉGALES & TOS" -->
 <div class="overlay" id="legalModal" onclick="if(event.target===this)closeModal('legalModal')">
   <div class="modal">
     <button class="x" onclick="closeModal('legalModal')">×</button>
-    <h2>Mentions Légales</h2>
+    <h2>Mentions Légales & ToS</h2>
     
     <h3>1. Éditeur du site</h3>
     <p>Le site <strong>Dragonria Toolbox</strong> (accessible à l'adresse https://lrdfdragon.github.io/) est un projet personnel, développé et édité par :<br>
     <strong>Nom / Pseudonyme :</strong> LeRDragon<br>
     <strong>Statut :</strong> Particulier (Site non commercial)</p>
-    <p>Pour toute question, réclamation ou pour m'envoyer des memes, vous pouvez me contacter à l'adresse suivante : <a href="mailto:lerdragon67@gmail.com" style="color:var(--cyan);">lerdragon67@gmail.com</a><br>
-    <em>(Le "67" de l'adresse mail valide officiellement ton statut de boss suprême du Bas-Rhin, ou prouve simplement que tu sais compter jusqu'à soixante-sept).</em></p>
+    <p>Pour toute question ou contact, vous pouvez m'écrire à l'adresse suivante : <a href="mailto:lerdragon67@gmail.com" style="color:var(--cyan);">lerdragon67@gmail.com</a></p>
 
     <h3>2. Hébergement</h3>
     <p>Le site est hébergé par :<br>
@@ -271,11 +270,16 @@ footer button{background:none;border:none;color:var(--cyan);cursor:pointer;font-
     Adresse : 88 Colin P. Kelly Jr Street, San Francisco, CA 94107, États-Unis<br>
     Site web : <a href="https://github.com" target="_blank" style="color:var(--cyan);">github.com</a></p>
 
-    <h3>3. Responsabilité</h3>
-    <p>Le script PowerShell proposé sur ce site est mis à disposition à des fins de diagnostic. L'utilisateur l'exécute sous sa propre responsabilité.</p>
+    <hr>
+
+    <h3>3. Conditions d'Utilisation (Terms of Service - ToS)</h3>
+    <p>En accédant au site <strong>Dragonria Toolbox</strong> et en utilisant le script PowerShell mis à disposition, vous acceptez sans réserve les conditions suivantes :</p>
+    <p><strong>• Utilisation du script :</strong> Le script est fourni "en l'état", sans garantie d'aucune sorte, explicite ou implicite. L'utilisateur exécute le script PowerShell via la commande fournie sous sa seule et entière responsabilité.</p>
+    <p><strong>• Limitation de responsabilité :</strong> L'éditeur (LeRDragon) ne pourra en aucun cas être tenu responsable des dommages directs ou indirects (perte de données, instabilité du système, dysfonctionnement matériel ou logiciel) résultant de l'utilisation ou de l'incapacité d'utiliser l'outil proposé.</p>
+    <p><strong>• Propriété intellectuelle :</strong> Le code source, le design et les éléments visuels de ce site et du script associé sont la propriété exclusive de LeRDragon, sauf mention contraire. Toute reproduction ou redistribution non autorisée est interdite.</p>
 
     <h3>4. Données personnelles (RGPD)</h3>
-    <p>Ce site ne collecte ni ne stocke aucune donnée personnelle sur un serveur tiers. L'affichage de l'adresse IP s'effectue localement sur le navigateur du visiteur.</p>
+    <p>Ce site ne collecte ni ne stocke aucune donnée personnelle sur un serveur tiers. L'affichage de l'adresse IP et de la géolocalisation s'effectue localement et directement depuis le navigateur du visiteur via des API externes publiques.</p>
   </div>
 </div>
 
