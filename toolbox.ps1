@@ -175,7 +175,7 @@ function Invoke-BenchmarkModule {
     $sw.Stop()
     $cpuTime = $sw.ElapsedMilliseconds
 
-    data:image/svg+xml;utf8,<svg></svg>$sw.Restart()
+    $sw.Restart()
     $memArray = New-Object System.Collections.ArrayList
     1..200000 | ForEach-Object { $null = $memArray.Add($_) }
     $sw.Stop()
