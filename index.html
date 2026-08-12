@@ -206,7 +206,11 @@
 
     <footer style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
         <div>Créé et Développé par <span class="rgb-text">LeRDragon</span></div>
-        <button onclick="openModal()" style="color: var(--accent-cyan); background: none; border: none; cursor: pointer; font-size: 0.85rem; text-decoration: underline; transition: 0.2s;">À propos de LeRDragon</button>
+        <div style="display: flex; gap: 15px; font-size: 0.85rem;">
+            <button onclick="openModal('aboutModal')" style="color: var(--accent-cyan); background: none; border: none; cursor: pointer; text-decoration: underline; transition: 0.2s;">À propos de LeRDragon</button>
+            <span style="color: var(--border-color);">|</span>
+            <button onclick="openModal('legalModal')" style="color: var(--accent-cyan); background: none; border: none; cursor: pointer; text-decoration: underline; transition: 0.2s;">Mentions Légales</button>
+        </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
@@ -268,12 +272,31 @@
             navigator.clipboard.writeText(document.getElementById('cmd').innerText);
             alert("Commande copiée !");
         }
+
+        // Gestion globale des modales
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        function outsideClick(event, modalId) {
+            if (event.target === document.getElementById(modalId)) {
+                closeModal(modalId);
+            }
+        }
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                closeModal('aboutModal');
+                closeModal('legalModal');
+            }
+        });
     </script>
 
     <!-- FENÊTRE MODALE "À PROPOS" -->
-    <div class="modal-overlay" id="aboutModal" onclick="outsideClick(event)" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; padding: 20px;">
+    <div class="modal-overlay" id="aboutModal" onclick="outsideClick(event, 'aboutModal')" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content" style="background: var(--card-bg); border: 1px solid var(--accent-cyan); border-radius: 16px; max-width: 500px; width: 100%; padding: 30px; text-align: left; position: relative; box-shadow: 0 0 30px rgba(0,242,254,0.2); max-height: 80vh; overflow-y: auto;">
-            <button class="close-modal" onclick="closeModal()" style="position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">&times;</button>
+            <button class="close-modal" onclick="closeModal('aboutModal')" style="position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">&times;</button>
             
             <h2 style="color: var(--accent-cyan); margin-bottom: 15px; font-size: 1.4rem;">À propos de LeRDragon</h2>
             <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 12px;">💻 Passionné de développement et d'administration système, je conçois des outils modernes et automatisés pour simplifier la vie des utilisateurs.</p>
@@ -281,27 +304,46 @@
             
             <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 15px 0;">
 
-            <h3 style="color: var(--text-main); margin-bottom: 8px; font-size: 1.1rem;">🎮 Mes Jeux & Projets</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 12px;">En dehors du dev, je passe du temps sur des jeux compétitifs comme Valorant, LOL et un peut de Fornite , des jeux en solo comme Mario Kart 8 Deluxe ( Elulateur ) Geométry Dash, et un jeu comme Dead By Daylight jsp trop quoi vous dire quel est le type du jeu mais je joue car sa change un peut,  et je travaille sur d'autres projets d'automatisation que je partagerai bientôt ici.</p>
-            
-            <h3 style="color: var(--text-main); margin-bottom: 8px; font-size: 1.1rem;">💻 Mes Configs PC</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;"><em>En cours de mise à jour...</em></p>
+            <h3 style="color: var(--text-main); margin-bottom: 8px; font-size: 1.1rem;">🎮 Jeux & projets</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">En dehors du dev, je passe du temps sur des jeux compétitifs et je travaille sur d'autres projets d'automatisation.</p>
         </div>
     </div>
 
-    <script>
-        // Gestion de la modale "À propos"
-        function openModal() {
-            document.getElementById('aboutModal').style.display = 'flex';
-        }
-        function closeModal() {
-            document.getElementById('aboutModal').style.display = 'none';
-        }
-        function outsideClick(event) {
-            if (event.target === document.getElementById('aboutModal')) {
-                closeModal();
-            }
-        }
-    </script>
+    <!-- FENÊTRE MODALE "MENTIONS LÉGALES" -->
+    <div class="modal-overlay" id="legalModal" onclick="outsideClick(event, 'legalModal')" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; padding: 20px;">
+        <div class="modal-content" style="background: var(--card-bg); border: 1px solid var(--accent-cyan); border-radius: 16px; max-width: 550px; width: 100%; padding: 30px; text-align: left; position: relative; box-shadow: 0 0 30px rgba(0,242,254,0.2); max-height: 80vh; overflow-y: auto;">
+            <button class="close-modal" onclick="closeModal('legalModal')" style="position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">&times;</button>
+            
+            <h2 style="color: var(--accent-cyan); margin-bottom: 15px; font-size: 1.4rem;">Mentions Légales</h2>
+
+            <h3 style="color: var(--text-main); margin: 15px 0 6px 0; font-size: 1rem;">1. Éditeur du site</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.5; margin-bottom: 8px;">
+              Le site <strong>Dragonria Toolbox</strong> (accessible à l'adresse https://lrdfdragon.github.io/) est un projet personnel, développé et édité par :<br>
+              <strong>Nom / Pseudonyme :</strong> LeRDragon<br>
+              <strong>Statut :</strong> Particulier (Site non commercial)<br>
+              <strong>Contact :</strong> [Insérer ton e-mail ou ton lien Discord]
+            </p>
+            <p style="color: var(--text-muted); font-size: 0.8rem; font-style: italic; margin-bottom: 12px;">Conformément à la loi pour la confiance dans l'économie numérique (LCEN), l'éditeur a choisi de conserver son anonymat sur le site public. Ses coordonnées réelles ont été transmises à l'hébergeur.</p>
+
+            <h3 style="color: var(--text-main); margin: 15px 0 6px 0; font-size: 1rem;">2. Hébergement</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.5; margin-bottom: 12px;">
+              Le site est hébergé par :<br>
+              <strong>GitHub, Inc.</strong><br>
+              Adresse : 88 Colin P. Kelly Jr Street, San Francisco, CA 94107, États-Unis<br>
+              Site web : <a href="https://github.com" target="_blank" style="color: var(--accent-cyan);">github.com</a>
+            </p>
+
+            <h3 style="color: var(--text-main); margin: 15px 0 6px 0; font-size: 1rem;">3. Propriété intellectuelle & Responsabilité</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.5; margin-bottom: 12px;">
+              Le script PowerShell (<code>Dragonria Toolbox</code>) proposé sur ce site est mis à disposition à des fins de diagnostic et d'analyse système.<br>
+              L'utilisateur exécute le script sous sa propre responsabilité. L'auteur ne saurait être tenu responsable en cas de mauvaise utilisation ou d'incompatibilité.
+            </p>
+
+            <h3 style="color: var(--text-main); margin: 15px 0 6px 0; font-size: 1rem;">4. Données personnelles (RGPD)</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;">
+              Ce site ne collecte, ne stocke et ne retransmet aucune donnée personnelle dans des bases de données tierces. L'affichage de l'adresse IP se fait directement au niveau du navigateur du visiteur.
+            </p>
+        </div>
+    </div>
 </body>
 </html>
