@@ -12,7 +12,7 @@ function Show-Header {
     Clear-Host
     Write-Host "==================================================================" -ForegroundColor DarkCyan
     Write-Host "                TOOLBOX BY LERDRAGON - SYSTEM & NETWORK           " -ForegroundColor Yellow -BackgroundColor Black
-    Write-Host "                     Version v0.6 [11/08/2026]                    " -ForegroundColor Cyan
+    Write-Host "                      Version v0.6 [11/08/2026]                    " -ForegroundColor Cyan
     Write-Host "==================================================================" -ForegroundColor DarkCyan
     
     if (-not $isAdmin) {
@@ -31,7 +31,7 @@ function Show-Header {
     Write-Host "------------------------------------------------------------------" -ForegroundColor DarkGray
     Write-Host "  PROCHAINES MAJ PREVUES (Retour en France 19-21 Aout) :" -ForegroundColor Magenta
     Write-Host "  - Multi-GPU/Disque/Ping dans le Bench + Note de Perf" -ForegroundColor DarkGray
-    Write-Host "  - Temperatues CPU/GPU + Frequence de rafraichissement dans l'Onglet 4" -ForegroundColor DarkGray
+    Write-Host "  - Temperatures CPU/GPU + Frequence de rafraichissement dans l'Onglet 4" -ForegroundColor DarkGray
     Write-Host "  - Onglet 5 : Mes Reseaux Sociaux & Support Multilingue (FR/EN)" -ForegroundColor DarkGray
     Write-Host "==================================================================" -ForegroundColor DarkCyan
     Write-Host ""
@@ -44,22 +44,18 @@ function Invoke-ConfigModule {
     Show-Header
     Write-Host "--- [1] DETAIL CONFIG BY LERDRAGON ---`n" -ForegroundColor Cyan
 
-    $pcName = $env:COMPUTERNAME
-    $CPU = Get-CimInstance Win32_Processor | Select-Object -First 1
-    $Sys = Get-CimInstance Win32_ComputerSystem
-    $MB = Get-CimInstance Win32_BaseBoard
-    $BIOS = Get-CimInstance Win32_BIOS
-    $OS = Get-CimInstance Win32_OperatingSystem
+    $pcName = $env:COMPUTERNAME$CPU = Get-CimInstance Win32_Processor | Select-Object -First 1
+    $Sys = Get-CimInstance Win32_ComputerSystem$MB = Get-CimInstance Win32_BaseBoard
+    $BIOS = Get-CimInstance Win32_BIOS$OS = Get-CimInstance Win32_OperatingSystem
 
-    $RAMModules = Get-CimInstance Win32_PhysicalMemory
-    $RAMConsole = ""
+    $RAMModules = Get-CimInstance Win32_PhysicalMemory$RAMConsole = ""
     $slotCount = 1
 
-    foreach ($ram in $RAMModules) {
+    foreach ($ram in$RAMModules) {
         $sizeGB = [math]::Round($ram.Capacity / 1GB, 2)
-        $manuf = if ($ram.Manufacturer -and $ram.Manufacturer -notmatch "0000|0012") { $ram.Manufacturer.Trim() } else { "Generique / OEM" }
+        $manuf = if ($ram.Manufacturer -and $ram.Manufacturer -notmatch "0000\vert{}0012") { $ram.Manufacturer.Trim() } else { "Generique / OEM" }
         $speed = if ($ram.Speed) { "$($ram.Speed) MHz" } else { "1600 MHz" }
-        $RAMConsole += "  - Slot $slotCount : $sizeGB Go | $speed | Marque : $manuf`n"
+        $RAMConsole += "  - Slot $slotCount :$sizeGB Go | $speed \vert{} Marque :$manuf`n"
         $slotCount++
     }
 
@@ -72,11 +68,8 @@ function Invoke-ConfigModule {
 
     $DiskConsole = ""
     $LogicalDisks = Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3"
-    foreach ($disk in $LogicalDisks) {
-        $totalGB = [math]::Round($disk.Size / 1GB, 2)
-        $freeGB = [math]::Round($disk.FreeSpace / 1GB, 2)
-        $percentFree = [math]::Round(($disk.FreeSpace / $disk.Size) * 100, 1)
-        $DiskConsole += "  - Disque ($($disk.DeviceID)) : $freeGB Go libres / $totalGB Go ($percentFree % libre)`n"
+    foreach ($disk in $LogicalDisks) {$totalGB = [math]::Round($disk.Size / 1GB, 2)$freeGB = [math]::Round($disk.FreeSpace / 1GB, 2)$percentFree = [math]::Round(($disk.FreeSpace / $disk.Size) * 100, 1)
+        $DiskConsole += "  - Disque ($($disk.DeviceID)) :$freeGB Go libres / $totalGB Go ($percentFree % libre)`n"
     }
 
     $CPUFreqBase = if ($CPU.MaxClockSpeed) { "$([math]::Round($CPU.MaxClockSpeed / 1000, 2)) GHz" } else { "N/A" }
@@ -203,13 +196,12 @@ function Invoke-BenchmarkModule {
 # ------------------------------------------------------------------------------
 function Invoke-MonitorModule {
     function Get-ProgressBar ([int]$percent, [int]$width = 20) {
-        $filled = [math]::Round(($percent / 100) * $width)
-        $empty = $width - $filled
+        $filled = [math]::Round(($percent / 100) * $width)$empty = $width -$filled
         return "[" + ("=" * $filled) + (" " * $empty) + "]"
     }
 
     $cpuCounter = New-Object System.Diagnostics.PerformanceCounter("Processor", "% Processor Time", "_Total")
-    $null = $cpuCounter.NextValue()
+    $null =$cpuCounter.NextValue()
 
     do {
         Show-Header
@@ -265,8 +257,7 @@ function Invoke-UpcomingModule {
     Write-Host " RETROUVEZ LERDRAGON SUR LES RESEAUX :" -ForegroundColor Yellow
     Write-Host "  - Site Web  : https://lrdfdragon.github.io" -ForegroundColor Cyan
     Write-Host "  - YouTube   : https://www.youtube.com/@LeRDragon" -ForegroundColor Red
-    Write-Host "  - Twitch    : https://www.twitch.tv/lerdragon" -ForegroundColor Magenta
-    Write-Host "  - Discord   : https://discord.gg/dBha5kxJHV`n" -ForegroundColor Blue
+    Write-Host "  - Twitch    : https://www.twitch.tv/lerdragon`n" -ForegroundColor Magenta
 
     Write-Host " PROCHAINES MISES A JOUR :" -ForegroundColor Yellow
     Write-Host "  - Mises a jour prevues des le retour en France (19-21 Aout)." -ForegroundColor White
@@ -300,7 +291,7 @@ do {
         break
     }
 
-    $inputKey = $keyInfo.KeyChar.ToString()
+    $inputKey =$keyInfo.KeyChar.ToString()
 
     switch ($inputKey) {
         "1" { Invoke-ConfigModule }
@@ -317,12 +308,11 @@ do {
 # ------------------------------------------------------------------------------
 Clear-Host
 Write-Host "==================================================================" -ForegroundColor DarkCyan
-Write-Host "             MERCI D'AVOIR UTILISE TOOLBOX BY LERDRAGON           " -ForegroundColor Yellow -BackgroundColor Black
+Write-Host "              MERCI D'AVOIR UTILISE TOOLBOX BY LERDRAGON           " -ForegroundColor Yellow -BackgroundColor Black
 Write-Host "==================================================================" -ForegroundColor DarkCyan
 Write-Host "  - Site Web  : https://lrdfdragon.github.io" -ForegroundColor Cyan
 Write-Host "  - YouTube   : https://www.youtube.com/@LeRDragon" -ForegroundColor Red
 Write-Host "  - Twitch    : https://www.twitch.tv/lerdragon" -ForegroundColor Magenta
-Write-Host "  - Discord   : https://discord.gg/dBha5kxJHV" -ForegroundColor Blue
 Write-Host "==================================================================" -ForegroundColor DarkCyan
 Write-Host "`nA tres bientot pour la suite !`n" -ForegroundColor Green
 Start-Sleep -Seconds 3
